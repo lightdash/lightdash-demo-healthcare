@@ -1,0 +1,89 @@
+version: 2
+models:
+  - name: stg_medicare__inpatient_charges
+    hidden: true
+    columns:
+      - name: service_year
+        description: ""
+        meta:
+          dimension:
+            type: number
+            hidden: true
+      - name: provider_id
+        description: ""
+        meta:
+          dimension:
+            type: string
+            hidden: true
+      - name: provider_name
+        description: ""
+        meta:
+          dimension:
+            type: string
+            hidden: true
+      - name: provider_city
+        description: ""
+        meta:
+          dimension:
+            type: string
+            hidden: true
+      - name: provider_state
+        description: ""
+        meta:
+          dimension:
+            type: string
+            hidden: true
+      - name: provider_division
+        description: ""
+        meta:
+          dimension:
+            type: string
+            hidden: true
+      - name: provider_region
+        description: ""
+        meta:
+          dimension:
+            type: string
+            hidden: true
+      - name: hospital_referral_region_description
+        description: ""
+        meta:
+          dimension:
+            type: string
+            hidden: true
+      - name: provider_name_and_id
+        description: ""
+        meta:
+          dimension:
+            type: string
+            hidden: true
+      - name: total_discharges
+        description: ""
+        meta:
+          dimension:
+            type: number
+            hidden: true
+      - name: average_covered_charges
+        description: ""
+        meta:
+          dimension:
+            type: number
+            hidden: true
+      - name: average_total_payments
+        description: ""
+        meta:
+          dimension:
+            type: number
+            hidden: true
+      - name: average_medicare_payments
+        description: ""
+        meta:
+          dimension:
+            type: number
+            hidden: true
+      - name: total_charged
+        description: ""
+        meta:
+          dimension:
+            type: number
+            hidden: true
