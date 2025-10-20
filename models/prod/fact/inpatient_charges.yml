@@ -19,6 +19,16 @@ models:
           fields: [inpatient_charges_fields*]
           relationship: many-to-one
 
+      metrics:
+      avg_charged_per_discharge:
+        type: number
+        format: usd
+        round: 0
+        groups:
+          - estimates
+        label: Average Charged per Discharge
+        sql: ${sum_total_charged} / ${sum_total_discharges}
+
     columns:
       - name: service_year
         description: The year in which the inpatient service was completed.
@@ -119,14 +129,4 @@ models:
               label: Sum Total Charged
               format: usd
               round: 2
-
-    metrics:
-      avg_charged_per_discharge:
-        type: number
-        format: usd
-        round: 0
-        groups:
-          - estimates
-        label: Average Charged per Discharge
-        sql: ${sum_total_charged} / ${sum_total_discharges}
 

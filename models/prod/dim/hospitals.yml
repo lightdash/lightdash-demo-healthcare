@@ -45,7 +45,116 @@ models:
                 - "provider_region"
                 - "provider_division"
               default: "provider_division"
-              mulitple: false
+              multiple: false
+
+      metrics:
+      mortality_measures_better_pct:
+        type: number
+        sql: ${total_mortality_measures_better} / NULLIF(${total_mortality_measures}, 0)
+        format: percent
+        label: "% Mortality Measures Better than Avg"
+        groups:
+          - efficiency
+        description: "Ratio of mortality measures that are better than the national average"
+      mortality_measures_worse_pct:
+        type: number
+        sql: ${mortality_measures_worse_count} / NULLIF(${total_mortality_measures}, 0)
+        format: percent
+        label: "% Mortality Measures Worse than Avg"
+        groups:
+          - efficiency
+        description: "Ratio of mortality measures that are worse than the national average"
+      safety_measures_better_pct:
+        type: number
+        sql: ${total_safety_measures_better} / NULLIF(${total_safety_measures}, 0)
+        format: percent
+        label: "% Safety Measures Better than Avg"
+        groups:
+          - efficiency
+        description: "Ratio of safety measures that are better than the national average"
+      safety_measures_worse_pct:
+        type: number
+        sql: ${total_safety_measures_worse} / NULLIF(${total_safety_measures}, 0)
+        format: percent
+        label: "% Safety Measures Worse than Avg"
+        groups:
+          - efficiency
+        description: "Ratio of safety measures that are worse than the national average"
+      patient_experience_measures_better_pct:
+        type: number
+        sql: ${total_patient_experience_measures_better} / NULLIF(${total_patient_experience_measures}, 0)
+        format: percent
+        label: "% Patient Experience Measures Better than Avg"
+        groups:
+          - efficiency
+        description: "Ratio of patient experience measures that are better than the national average"
+      patient_experience_measures_worse_pct:
+        type: number
+        sql: ${total_patient_experience_measures_worse} / NULLIF(${total_patient_experience_measures}, 0)
+        format: percent
+        label: "% Patient Experience Measures Worse than Avg"
+        groups:
+          - efficiency
+        description: "Ratio of patient experience measures that are worse than the national average"
+      readmission_measures_better_pct:
+        type: number
+        sql: ${total_readmission_measures_better} / NULLIF(${total_readmission_measures}, 0)
+        format: percent
+        label: "% Readmission Measures Better than Avg"
+        groups:
+          - efficiency
+        description: "Ratio of readmission measures that are better than the national average"
+      readmission_measures_worse_pct:
+        type: number
+        sql: ${total_readmission_measures_worse} / NULLIF(${total_readmission_measures}, 0)
+        format: percent
+        label: "% Readmission Measures Worse than Avg"
+        groups:
+          - efficiency
+        description: "Ratio of readmission measures that are worse than the national average"
+      timely_effective_measures_better_pct:
+        type: number
+        sql: ${total_timely_effective_measures_better} / NULLIF(${total_timely_effective_measures}, 0)
+        format: percent
+        label: "% Timely & Effective Care Measures Better than Avg"
+        groups:
+          - efficiency
+        description: "Ratio of timely and effective care measures that are better than average"
+      timely_effective_measures_worse_pct:
+        type: number
+        sql: ${total_timely_effective_measures_worse} / NULLIF(${total_timely_effective_measures}, 0)
+        format: percent
+        label: "% Timely & Effective Care Measures Worse than Avg"
+        groups:
+          - efficiency
+        description: "Ratio of timely and effective care measures that are worse than average"
+      overall_efficiency_index:
+        type: number
+        sql: (
+          COALESCE(${mortality_measures_better_pct},0) +
+          COALESCE(${safety_measures_better_pct},0) +
+          COALESCE(${patient_experience_measures_better_pct},0) +
+          COALESCE(${readmission_measures_better_pct},0) +
+          COALESCE(${timely_effective_measures_better_pct},0)) / 5
+        format: percent
+        label: "Overall Hospital Performance Index"
+        groups:
+          - efficiency
+        description: "Average percentage of measures better than average across all categories"
+      high_performance_flag:
+        type: boolean
+        sql: CASE WHEN (
+          COALESCE(${mortality_measures_better_pct},0) +
+          COALESCE(${safety_measures_better_pct},0) +
+          COALESCE(${patient_experience_measures_better_pct},0) +
+          COALESCE(${readmission_measures_better_pct},0) +
+          COALESCE(${timely_effective_measures_better_pct},0)) / 5 >= 0.7 THEN TRUE ELSE FALSE END
+        label: "High Performance Flag"
+        groups:
+          - efficiency
+        description: "Indicates hospitals performing better than 60% of measures on average"
+
+
 
     columns:
       - name: provider_id
@@ -415,111 +524,3 @@ models:
                 - totals
               description: >-
                 The total number of timely and effective care measures reported worse than other hospitals.
-
-    metrics:
-      mortality_measures_better_pct:
-        type: number
-        sql: ${total_mortality_measures_better} / NULLIF(${total_mortality_measures}, 0)
-        format: percent
-        label: "% Mortality Measures Better than Avg"
-        groups:
-          - efficiency
-        description: "Ratio of mortality measures that are better than the national average"
-      mortality_measures_worse_pct:
-        type: number
-        sql: ${mortality_measures_worse_count} / NULLIF(${total_mortality_measures}, 0)
-        format: percent
-        label: "% Mortality Measures Worse than Avg"
-        groups:
-          - efficiency
-        description: "Ratio of mortality measures that are worse than the national average"
-      safety_measures_better_pct:
-        type: number
-        sql: ${total_safety_measures_better} / NULLIF(${total_safety_measures}, 0)
-        format: percent
-        label: "% Safety Measures Better than Avg"
-        groups:
-          - efficiency
-        description: "Ratio of safety measures that are better than the national average"
-      safety_measures_worse_pct:
-        type: number
-        sql: ${total_safety_measures_worse} / NULLIF(${total_safety_measures}, 0)
-        format: percent
-        label: "% Safety Measures Worse than Avg"
-        groups:
-          - efficiency
-        description: "Ratio of safety measures that are worse than the national average"
-      patient_experience_measures_better_pct:
-        type: number
-        sql: ${total_patient_experience_measures_better} / NULLIF(${total_patient_experience_measures}, 0)
-        format: percent
-        label: "% Patient Experience Measures Better than Avg"
-        groups:
-          - efficiency
-        description: "Ratio of patient experience measures that are better than the national average"
-      patient_experience_measures_worse_pct:
-        type: number
-        sql: ${total_patient_experience_measures_worse} / NULLIF(${total_patient_experience_measures}, 0)
-        format: percent
-        label: "% Patient Experience Measures Worse than Avg"
-        groups:
-          - efficiency
-        description: "Ratio of patient experience measures that are worse than the national average"
-      readmission_measures_better_pct:
-        type: number
-        sql: ${total_readmission_measures_better} / NULLIF(${total_readmission_measures}, 0)
-        format: percent
-        label: "% Readmission Measures Better than Avg"
-        groups:
-          - efficiency
-        description: "Ratio of readmission measures that are better than the national average"
-      readmission_measures_worse_pct:
-        type: number
-        sql: ${total_readmission_measures_worse} / NULLIF(${total_readmission_measures}, 0)
-        format: percent
-        label: "% Readmission Measures Worse than Avg"
-        groups:
-          - efficiency
-        description: "Ratio of readmission measures that are worse than the national average"
-      timely_effective_measures_better_pct:
-        type: number
-        sql: ${total_timely_effective_measures_better} / NULLIF(${total_timely_effective_measures}, 0)
-        format: percent
-        label: "% Timely & Effective Care Measures Better than Avg"
-        groups:
-          - efficiency
-        description: "Ratio of timely and effective care measures that are better than average"
-      timely_effective_measures_worse_pct:
-        type: number
-        sql: ${total_timely_effective_measures_worse} / NULLIF(${total_timely_effective_measures}, 0)
-        format: percent
-        label: "% Timely & Effective Care Measures Worse than Avg"
-        groups:
-          - efficiency
-        description: "Ratio of timely and effective care measures that are worse than average"
-      overall_efficiency_index:
-        type: number
-        sql: (
-          COALESCE(${mortality_measures_better_pct},0) +
-          COALESCE(${safety_measures_better_pct},0) +
-          COALESCE(${patient_experience_measures_better_pct},0) +
-          COALESCE(${readmission_measures_better_pct},0) +
-          COALESCE(${timely_effective_measures_better_pct},0)) / 5
-        format: percent
-        label: "Overall Hospital Performance Index"
-        groups:
-          - efficiency
-        description: "Average percentage of measures better than average across all categories"
-      high_performance_flag:
-        type: boolean
-        sql: CASE WHEN (
-          COALESCE(${mortality_measures_better_pct},0) +
-          COALESCE(${safety_measures_better_pct},0) +
-          COALESCE(${patient_experience_measures_better_pct},0) +
-          COALESCE(${readmission_measures_better_pct},0) +
-          COALESCE(${timely_effective_measures_better_pct},0)) / 5 >= 0.7 THEN TRUE ELSE FALSE END
-        label: "High Performance Flag"
-        groups:
-          - efficiency
-        description: "Indicates hospitals performing better than 60% of measures on average"
-

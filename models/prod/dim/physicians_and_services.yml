@@ -29,7 +29,24 @@ models:
                 - "physician_region"
                 - "physician_division"
               default: "physician_division"
-              mulitple: false
+              multiple: false
+
+      metrics:
+      avg_services_per_benefit:
+        type: number
+        label: Services per Benefit
+        sql: ${sum_number_services} / NULLIF(${sum_number_benefits}, 0)
+        description: Total services divided by total unique benefits.
+        groups:
+          - averages
+      benefit_coverage_ratio:
+        type: number
+        label: Benefit Coverage Ratio
+        sql: ${sum_number_benefits} / NULLIF(${sum_number_services}, 0)
+        description: Average medicare allowed amount divided by average submitted charge amount.
+        format: percent
+        groups:
+          - averages
 
     columns:
       - name: physician_id
@@ -239,21 +256,3 @@ models:
             label: Avg. Submitted Charge Amount
             groups:
                 - averages
-
-    metrics:
-      - id: avg_services_per_benefit
-        type: number
-        label: Services per Benefit
-        sql: ${sum_number_services} / NULLIF(${sum_number_benefits}, 0)
-        description: Total services divided by total unique benefits.
-        format: "0.00"
-        groups:
-          - averages
-      - id: benefit_coverage_ratio
-        type: number
-        label: Benefit Coverage Ratio
-        sql: ${sum_number_benefits} / NULLIF(${sum_number_services}, 0)
-        description: Average medicare allowed amount divided by average submitted charge amount.
-        format: "0.00%"
-        groups:
-          - averages
