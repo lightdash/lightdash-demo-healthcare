@@ -1,0 +1,259 @@
+version: 2
+models:
+  - name: physicians_and_services
+    description: "Dimension table for physicians and their services"
+    config:
+      tags: ['prod']
+    meta:
+      group_details:
+        location:
+          label: Location
+          description: >-
+            These fields contain location data for each physician, like City and
+            State.
+        totals:
+          label: Total Metrics
+          description: >-
+            These metrics are related to counts or totals for services and benefits.
+        averages:
+          label: Avg. Metrics
+          description: >-
+            These metrics are related to average amounts for medicare payments and charges.
+      parameters:
+        physicians_dim_toggle:
+              label: "State/Region/Division"
+              description: >-
+                Toggle to include State, Region, and Division dimensions in your analysis.
+              options:
+                - "physician_state"
+                - "physician_region"
+                - "physician_division"
+              default: "physician_division"
+              mulitple: false
+
+    columns:
+      - name: physician_id
+        description: The distinct ID for each physician from the Medicare database.
+        meta:
+          dimension:
+            type: number
+            format: id
+            label: Physician ID
+          metrics:
+            count_distinct_physician_id:
+              type: count_distinct
+              label: Unique physicians
+              groups:
+                - totals
+              description: >-
+                Unique number of physicians in your query, grouped by the
+                dimensions you have chosen
+      - name: physician_first_name
+        description: >-
+          The name of this physician based on the value recorded in the Medicare
+          database. There are sometimes multiple physicians with the same name,
+          so we hide this field in favor of physician_name_and_id.  
+        meta:
+          dimension:
+            hidden: true
+            type: string
+      - name: physician_name_and_id
+        description: >-
+          A combination of the physician First Name and ID fields to ensure queries
+          that require showing physician Name are not accidentally duplicating
+          physicians with the same name.
+        meta:
+          dimension:
+            label: Physician Name
+            type: string
+      - name: physician_city
+        description: >-
+          The City where this physician is located based on the value recorded in
+          the Medicare database.
+        meta:
+          dimension:
+            type: string
+            groups:
+              - location
+      - name: physician_state
+        description: >-
+          The State where this physician is located based on the value recorded
+          in the Medicare database.
+        meta:
+          dimension:
+            type: string
+            groups:
+              - location
+      - name: physician_division
+        description: >-
+          The US Division where this physician is located based on the State
+          recorded in the Medicare database. There are 9 divisions in the US: 
+          New England, Middle Atlantic, East North Central, West North Central, 
+          South Atlantic, East South Central, West South Central, Mountain, and
+          Pacific
+        meta:
+          dimension:
+            type: string
+            groups:
+              - location
+      - name: physician_region
+        description: >-
+          The US Region where this physician is located based on the State
+          recorded in the Medicare database. There are four regions in the US:
+          Northest, Midwest, South, and West.
+        meta:
+          dimension:
+            type: string
+            groups:
+              - location
+      - name: physician_type
+        description: >-
+          The type of service the physician is dedicated to. For example:
+          "Adding a stint to the heart" or "root canal removal"
+        meta:
+          dimension:
+            type: string
+      - name: is_medicare_participant
+        description: A boolean stating whether the physician participates in medicare
+        meta:
+          dimension:
+            type: boolean
+      - name: service_description
+        description: >-
+          A description of the particular service provided by the physician.
+        meta:
+          dimension:
+            label: Service Desciption
+            type: string
+      - name: drug_indicator
+        description: >-
+          This is a string filed with either Y or N
+          This field can be used to demo a custom dimension in the project, which you push back to the project yml
+        meta:
+          dimension:
+            label: Drug Indicator
+            type: string
+      - name: line_srvc_cnt
+        description: >-
+          Represents the total number of service line items submitted on claims for a physician.
+          Think of this as how many individual services were billed, 
+          regardless of whether they were done on the same day or for the same patient.
+        meta:
+          dimension:
+            type: number
+          metrics:
+            sum_number_services:
+              type: sum
+              label: Total Services
+              groups:
+                - totals
+              description: >-
+                The sum of the total number of services completed based on the
+                fields you have selected.
+            sum_number_services_k:
+              type: sum
+              label: Total Services (Thousands)
+              compact: thousands
+              groups:
+                - totals
+              description: >-
+                The sum of the total number of services completed based on the
+                fields you have selected, compacted to thousands.
+            sum_number_services_mm:
+              type: sum
+              label: Total Services (Millions)
+              compact: millions
+              groups:
+                - totals
+              description: >-
+                The sum of the total number of services completed based on the
+                fields you have selected, compacted to millions.
+      - name: bene_unique_cnt
+        description: >-
+          The number of benefits used by this physician.
+        meta:
+          dimension:
+            type: number
+          metrics:
+            sum_number_benefits:
+              type: sum
+              round: 2
+              label: Total Benefits
+              groups:
+                - totals
+              description: >-
+                The sum of the total number of benefits used based on the
+                fields you have selected.
+            sum_number_benefits_k:
+              type: sum
+              round: 2
+              label: Total Benefits (Thousands)
+              compact: thousands
+              groups:
+                - totals
+              description: >-
+                The sum of the total number of benefits used based on the
+                fields you have selected, compacted to thousands.
+            sum_number_benefits_mm:
+              type: sum
+              round: 2
+              label: Total Benefits (Millions)
+              compact: millions
+              groups:
+                - totals
+              description: >-
+                The sum of the total number of benefits used  based on the
+                fields you have selected, compacted to millions.
+      - name: bene_day_srvc_cnt
+        description: >-
+          Represents the number of days of service provided to beneficiaries. 
+          Think of this as the number of patient-days, which is a coarser measure than line count
+        meta:
+          dimension:
+            type: number
+            hidden: true
+          metrics:
+            sum_total_day_services_for_beneficiaries:
+              type: sum
+              label: Total Service Days for Beneficiaries
+              round: 2
+              groups:
+                - totals
+              description: >-
+                The sum of the total amount of day services for each physician     
+      - name: avg_medicare_allowed_amt
+        description: >-
+          The average medicare allowed amount per each physician
+        meta:
+          dimension:
+            type: number
+            label: Avg. Medicare Allowed Amount
+            groups:
+                - averages
+      - name: avg_submitted_charge_amt
+        description: >-
+          The average submitted charge amount per each physician
+        meta:
+          dimension:
+            type: number
+            label: Avg. Submitted Charge Amount
+            groups:
+                - averages
+
+    metrics:
+      - id: avg_services_per_benefit
+        type: number
+        label: Services per Benefit
+        sql: ${sum_number_services} / NULLIF(${sum_number_benefits}, 0)
+        description: Total services divided by total unique benefits.
+        format: "0.00"
+        groups:
+          - averages
+      - id: benefit_coverage_ratio
+        type: number
+        label: Benefit Coverage Ratio
+        sql: ${sum_number_benefits} / NULLIF(${sum_number_services}, 0)
+        description: Average medicare allowed amount divided by average submitted charge amount.
+        format: "0.00%"
+        groups:
+          - averages
