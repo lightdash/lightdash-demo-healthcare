@@ -4,7 +4,7 @@ models:
     meta:
       group_details:
         location:
-          label: Location
+          label: Provider Location
           description: >-
             These fields contain location data for each provider, like City and
             State.
@@ -23,44 +23,44 @@ models:
           relationship: many-to-one
 
       metrics:
-      diff_estimate_vs_payment:
-        type: number
-        format: usd
-        round: 0
-        groups:
-          - estimates
-        label: Total Estimate vs Total Payment
-        sql: ${sum_total_estimated} - ${sum_total_paid}
-      avg_estimated_per_service:
-        type: number
-        format: usd
-        round: 0
-        groups:
-          - estimates
-        label: Average Estimated per Service
-        sql: ${sum_total_estimated} / ${sum_number_services}
-      avg_paid_per_service:
-        type: number
-        format: usd
-        round: 0
-        label: Average Paid per Service
-        sql: ${sum_total_paid} / ${sum_number_services}
-      diff_avg_estimate_vs_avg_payment:
-        type: number
-        format: usd
-        round: 0
-        groups:
-          - estimates
-        label: Average Estimate vs Average Payment
-        sql: ${avg_estimated_per_service} - ${avg_paid_per_service}
-      pct_estimate_vs_paid:
-        type: number
-        format: percent
-        round: 0
-        groups:
-          - estimates
-        label: Percent of Estimate Inflation vs Actual Paid
-        sql: ${diff_estimate_vs_payment} / ${sum_total_paid}
+        diff_estimate_vs_payment:
+          type: number
+          format: usd
+          round: 0
+          groups:
+            - estimates
+          label: Total Estimate vs Total Payment
+          sql: ${sum_total_estimated} - ${sum_total_paid}
+        avg_estimated_per_service:
+          type: number
+          format: usd
+          round: 0
+          groups:
+            - estimates
+          label: Average Estimated per Service
+          sql: ${sum_total_estimated} / ${sum_number_services}
+        avg_paid_per_service:
+          type: number
+          format: usd
+          round: 0
+          label: Average Paid per Service
+          sql: ${sum_total_paid} / ${sum_number_services}
+        diff_avg_estimate_vs_avg_payment:
+          type: number
+          format: usd
+          round: 0
+          groups:
+            - estimates
+          label: Average Estimate vs Average Payment
+          sql: ${avg_estimated_per_service} - ${avg_paid_per_service}
+        pct_estimate_vs_paid:
+          type: number
+          format: percent
+          round: 0
+          groups:
+            - estimates
+          label: Percent of Estimate Inflation vs Actual Paid
+          sql: ${diff_estimate_vs_payment} / ${sum_total_paid}
 
     columns:
       - name: provider_id

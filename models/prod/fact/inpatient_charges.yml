@@ -4,7 +4,7 @@ models:
     meta:
       group_details:
         location:
-          label: Location
+          label: Provider Location
           description: >-
             These fields contain location data for each provider, like City, State, Division, and Region.
         estimates:
@@ -20,14 +20,14 @@ models:
           relationship: many-to-one
 
       metrics:
-      avg_charged_per_discharge:
-        type: number
-        format: usd
-        round: 0
-        groups:
-          - estimates
-        label: Average Charged per Discharge
-        sql: ${sum_total_charged} / ${sum_total_discharges}
+        avg_charged_per_discharge:
+          type: number
+          format: usd
+          round: 0
+          groups:
+            - estimates
+          label: Average Charged per Discharge
+          sql: ${sum_total_charged} / ${sum_total_discharges}
 
     columns:
       - name: service_year

@@ -7,10 +7,15 @@ models:
     meta:
       group_details:
         location:
-          label: Location
+          label: Physician Location
           description: >-
             These fields contain location data for each physician, like City and
             State.
+        descriptors:
+          label: Physician Descriptors
+          description: >-
+            These fields contain descriptive data for each physician, like name and
+            type.
         totals:
           label: Total Metrics
           description: >-
@@ -19,6 +24,11 @@ models:
           label: Avg. Metrics
           description: >-
             These metrics are related to average amounts for medicare payments and charges.
+        raw_counts:
+          label: Raw Counts
+          description: >-
+            These metrics are related to raw counts of services and beneficiaries.
+
       parameters:
         physicians_dim_toggle:
               label: "State/Region/Division"
@@ -32,21 +42,21 @@ models:
               multiple: false
 
       metrics:
-      avg_services_per_benefit:
-        type: number
-        label: Services per Benefit
-        sql: ${sum_number_services} / NULLIF(${sum_number_benefits}, 0)
-        description: Total services divided by total unique benefits.
-        groups:
-          - averages
-      benefit_coverage_ratio:
-        type: number
-        label: Benefit Coverage Ratio
-        sql: ${sum_number_benefits} / NULLIF(${sum_number_services}, 0)
-        description: Average medicare allowed amount divided by average submitted charge amount.
-        format: percent
-        groups:
-          - averages
+        avg_services_per_benefit:
+          type: number
+          label: Services per Benefit
+          sql: ${sum_number_services} / NULLIF(${sum_number_benefits}, 0)
+          description: Total services divided by total unique benefits.
+          groups:
+            - averages
+        benefit_coverage_ratio:
+          type: number
+          label: Benefit Coverage Ratio
+          sql: ${sum_number_benefits} / NULLIF(${sum_number_services}, 0)
+          description: Average medicare allowed amount divided by average submitted charge amount.
+          format: percent
+          groups:
+            - averages
 
     columns:
       - name: physician_id
@@ -74,6 +84,8 @@ models:
           dimension:
             hidden: true
             type: string
+            groups:
+              - descriptors
       - name: physician_name_and_id
         description: >-
           A combination of the physician First Name and ID fields to ensure queries
@@ -83,6 +95,8 @@ models:
           dimension:
             label: Physician Name
             type: string
+            groups:
+              - descriptors
       - name: physician_city
         description: >-
           The City where this physician is located based on the value recorded in
@@ -130,11 +144,15 @@ models:
         meta:
           dimension:
             type: string
+            groups:
+              - descriptors
       - name: is_medicare_participant
         description: A boolean stating whether the physician participates in medicare
         meta:
           dimension:
             type: boolean
+            groups:
+              - descriptors
       - name: service_description
         description: >-
           A description of the particular service provided by the physician.
@@ -142,6 +160,8 @@ models:
           dimension:
             label: Service Desciption
             type: string
+            groups:
+              - descriptors
       - name: drug_indicator
         description: >-
           This is a string filed with either Y or N
@@ -150,6 +170,8 @@ models:
           dimension:
             label: Drug Indicator
             type: string
+            groups:
+              - descriptors
       - name: line_srvc_cnt
         description: >-
           Represents the total number of service line items submitted on claims for a physician.
@@ -158,6 +180,8 @@ models:
         meta:
           dimension:
             type: number
+            groups:
+              - raw_counts
           metrics:
             sum_number_services:
               type: sum
@@ -191,6 +215,8 @@ models:
         meta:
           dimension:
             type: number
+            groups:
+              - raw_counts
           metrics:
             sum_number_benefits:
               type: sum
@@ -229,6 +255,8 @@ models:
           dimension:
             type: number
             hidden: true
+            groups:
+              - raw_counts
           metrics:
             sum_total_day_services_for_beneficiaries:
               type: sum
@@ -245,6 +273,7 @@ models:
           dimension:
             type: number
             label: Avg. Medicare Allowed Amount
+            hidden: true
             groups:
                 - averages
       - name: avg_submitted_charge_amt
@@ -254,5 +283,6 @@ models:
           dimension:
             type: number
             label: Avg. Submitted Charge Amount
+            hidden: true
             groups:
                 - averages
