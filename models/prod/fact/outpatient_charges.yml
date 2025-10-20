@@ -1,0 +1,280 @@
+version: 2
+models:
+  - name: outpatient_charges
+    meta:
+      group_details:
+        location:
+          label: Location
+          description: >-
+            These fields contain location data for each provider, like City and
+            State.
+        estimates:
+          label: Estimate Metrics
+          description: >-
+            These metrics are related to estimated charges. Most reports use
+            Total Paid to show actual payments unless you are specifically
+            analyzing estimates. 
+
+      joins:
+        - join: hospitals
+          type: left
+          sql_on: ${outpatient_charges.provider_id} = ${hospitals.provider_id}
+          fields: [outpatient_charges*]
+          relationship: many-to-one
+
+    columns:
+      - name: provider_id
+        description: The distinct ID for each provider from the Medicare database.
+        meta:
+          dimension:
+            type: number
+            format: id
+            label: Provider ID
+          metrics:
+            count_distinct_provider_id:
+              type: count_distinct
+              label: Unique Providers
+              description: >-
+                Unique number of providers in your query, grouped by the
+                dimensions you have chosen
+      - name: provider_name
+        description: >-
+          The name of this provider based on the value recorded in the Medicare
+          database. There are sometimes multiple providers with the same name,
+          so we hide this field in favor of provider_name_and_id.  
+        meta:
+          dimension:
+            hidden: true
+            type: string
+      - name: provider_name_and_id
+        description: >-
+          A combination of the Provider Name and ID fields to ensure queries
+          that require showing Provider Name are not accidentally duplicating
+          providers with the same name.
+        meta:
+          dimension:
+            label: Provider Name
+            type: string
+      - name: provider_city
+        description: >-
+          The City where this provider is located based on the value recorded in
+          the Medicare database.
+        meta:
+          dimension:
+            type: string
+            groups:
+              - location
+      - name: provider_state
+        description: >-
+          The State where this provider is located based on the value recorded
+          in the Medicare database.
+        meta:
+          dimension:
+            type: string
+            groups:
+              - location
+      - name: provider_division
+        description: >-
+          The US Division where this provider is located based on the State
+          recorded in the Medicare database. There are 9 divisions in the US: 
+          New England, Middle Atlantic, East North Central, West North Central, 
+          South Atlantic, East South Central, West South Central, Mountain, and
+          Pacific
+        meta:
+          dimension:
+            type: string
+            groups:
+              - location
+      - name: provider_region
+        description: >-
+          The US Region where this provider is located based on the State
+          recorded in the Medicare database. There are four regions in the US:
+          Northest, Midwest, South, and West.
+        meta:
+          dimension:
+            type: string
+            groups:
+              - location
+      - name: hospital_referral_region
+        description: >-
+          The Hospitcal referral region where this provider is located based on
+          the value recorded in the Medicare database. This will be the
+          combination of State - City (e.g. AK - Anchorage).
+        meta:
+          dimension:
+            type: string
+            groups:
+              - location
+      - name: service_year
+        description: The year in which the outpatient service was completed.
+        meta:
+          dimension:
+            type: date
+            time_intervals:
+              - YEAR
+      - name: apc
+        description: >-
+          Ambulatory payment classifications (APCs) are the method by which the
+          government pays  facilities for outpatient services through the
+          Medicare program. Each APC contains  services similar in resource
+          utilization, clinical intensity, and cost.
+        meta:
+          dimension:
+            label: APC
+            type: string
+      - name: number_services
+        description: >-
+          The number of services completed by this provider for the given APC
+          and year.
+        meta:
+          dimension:
+            type: number
+            hidden: true
+          metrics:
+            sum_number_services:
+              type: sum
+              label: Total Services
+              description: >-
+                The sum of the total number of services completed based on the
+                fields you have selected.
+            sum_number_services_k:
+              type: sum
+              label: Total Services (Thousands)
+              compact: thousands
+              description: >-
+                The sum of the total number of services completed based on the
+                fields you have selected, compacted to thousands.
+            sum_number_services_mm:
+              type: sum
+              label: Total Services (Millions)
+              compact: millions
+              description: >-
+                The sum of the total number of services completed based on the
+                fields you have selected, compacted to millions.
+      - name: total_paid
+        description: >-
+          Total amount paid by Medicare to this provider for the given APC and
+          year
+        meta:
+          dimension:
+            type: number
+            hidden: true
+          metrics:
+            sum_total_paid:
+              type: sum
+              label: Total Paid
+              format: usd
+              round: 0
+              description: >-
+                The sum of the total amount paid by Medicare for the combination
+                of fields you have selected in your query.
+            sum_total_paid_mm:
+              type: sum
+              label: Total Paid (Millions)
+              format: usd
+              compact: millions
+              round: 0
+              description: >-
+                The sum of the total amount paid by Medicare for the combination
+                of fields you have selected in your query, compacted to
+                millions.          
+            sum_total_paid_bn:
+              type: sum
+              label: Total Paid (Billions)
+              format: usd
+              compact: billions
+              round: 0
+              description: >-
+                The sum of the total amount paid by Medicare for the combination
+                of fields you have selected in your query, compacted to
+                billions.          
+      - name: total_estimated
+        description: >-
+          Total estimated submitted charges (outpatient_services multiplied by
+          average_estimated_submitted_charges).
+        meta:
+          dimension:
+            type: number
+            hidden: true
+          metrics:
+            sum_total_estimated:
+              type: sum
+              label: Total Estimated
+              format: usd
+              groups:
+                - estimates
+              round: 0
+              description: >-
+                The sum of the total estimated submitted charges by providers to
+                Medicare for the combination of fields you have selected in your
+                query.
+            sum_total_estimated_mm:
+              type: sum
+              label: Total Estimated (Millions)
+              format: usd
+              compact: millions
+              groups:
+                - estimates
+              round: 0
+              description: >-
+                The sum of the total estimated submitted charges by providers to
+                Medicare for the combination of fields you have selected in your
+                query, compacted to millions.
+            sum_total_estimated_bn:
+              type: sum
+              label: Total Estimated (Billions)
+              format: usd
+              compact: billions
+              groups:
+                - estimates
+              round: 0
+              description: >-
+                The sum of the total estimated submitted charges by providers to
+                Medicare for the combination of fields you have selected in your
+                query, compacted to billions.
+      - name: parsed_apc_level
+        description: "Level of the APC pulled out from the APC label"
+        meta:
+          dimension:
+            type: string
+            label: Parsed APC level
+
+    metrics:
+      diff_estimate_vs_payment:
+        type: number
+        format: usd
+        round: 0
+        groups:
+          - estimates
+        label: Total Estimate vs Total Payment
+        sql: ${sum_total_estimated} - ${sum_total_paid}
+      avg_estimated_per_service:
+        type: number
+        format: usd
+        round: 0
+        groups:
+          - estimates
+        label: Average Estimated per Service
+        sql: ${sum_total_estimated} / ${sum_number_services}
+      avg_paid_per_service:
+        type: number
+        format: usd
+        round: 0
+        label: Average Paid per Service
+        sql: ${sum_total_paid} / ${sum_number_services}
+      diff_avg_estimate_vs_avg_payment:
+        type: number
+        format: usd
+        round: 0
+        groups:
+          - estimates
+        label: Average Estimate vs Average Payment
+        sql: ${avg_estimated_per_service} - ${avg_paid_per_service}
+      pct_estimate_vs_paid:
+        type: number
+        format: percent
+        round: 0
+        groups:
+          - estimates
+        label: Percent of Estimate Inflation vs Actual Paid
+        sql: ${diff_estimate_vs_payment} / ${sum_total_paid}
