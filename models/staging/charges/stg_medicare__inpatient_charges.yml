@@ -1,0 +1,113 @@
+models:
+  - name: stg_medicare__inpatient_charges
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - service_year
+            - provider_id
+            - drg_code
+    config:
+      tags: ['stg']
+    columns:
+      - name: uid
+        description: "Unique identifier for each record, composed of service year, provider ID, and DRG code"
+        tests:
+          - unique
+          - not_null
+        meta:
+          dimension:
+            type: string
+      - name: service_year
+        description: "Year of service"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: number
+      - name: provider_id
+        description: "The Provider ID; primary key in this table"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: string
+      - name: provider_name
+        description: "The name of the provider"
+        meta:
+          dimension:
+            type: string
+      - name: provider_city
+        description: "City where the provider is located"
+        meta:
+          dimension:
+            type: string
+      - name: provider_state
+        description: "State where the provider is located"
+        meta:
+          dimension:
+            type: string
+      - name: provider_division
+        description: "Provider division derived from provider state"
+        meta:
+          dimension:
+            type: string
+      - name: provider_region
+        description: "Provider region derived from provider division"
+        meta:
+          dimension:
+            type: string
+      - name: hospital_referral_region_description
+        description: "Description of the hospital referral region"
+        meta:
+          dimension:
+            type: string
+      - name: drg_definition
+        description: "The line item treatment classification code and description"
+        meta:
+          dimension:
+            type: string
+      - name: drg_code
+        description: "The line item treatment classification code"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: string
+      - name: provider_name_and_id
+        description: "A concatenation of provider name and ID for reporting consistency"
+        meta:
+          dimension:
+            type: string
+      - name: total_discharges
+        description: "Total number of discharges for the DRG"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: number
+      - name: average_covered_charges
+        description: "Average covered charges for the DRG"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: number
+      - name: average_total_payments
+        description: "Average total payments for the DRG"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: number
+      - name: average_medicare_payments
+        description: "Average Medicare payments for the DRG"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: number
+      - name: total_charged
+        description: "Total charged amount (calculated)"
+        meta:
+          dimension:
+            type: number

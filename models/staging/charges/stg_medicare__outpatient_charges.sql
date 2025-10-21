@@ -6,7 +6,8 @@ with all_years as (
   select 
     date('2011-01-01') as service_year,
     apc,
-    cast(provider_id as int64) as provider_id,
+    left(apc, 4) as apc_code,
+    cast(provider_id as string) as provider_id,
     upper(provider_name) as provider_name,
     upper(provider_city) as provider_city,
     upper(provider_state) as provider_state,
@@ -22,7 +23,8 @@ with all_years as (
   select 
     date('2012-01-01') as service_year,
     apc,
-    cast(provider_id as int64) as provider_id,
+    left(apc, 4) as apc_code,
+    cast(provider_id as string) as provider_id,
     upper(provider_name) as provider_name,
     upper(provider_city) as provider_city,
     upper(provider_state) as provider_state,
@@ -38,7 +40,8 @@ with all_years as (
   select 
     date('2013-01-01') as service_year,
     apc,
-    cast(provider_id as int64) as provider_id,
+    left(apc, 4) as apc_code,
+    cast(provider_id as string) as provider_id,
     upper(provider_name) as provider_name,
     upper(provider_city) as provider_city,
     upper(provider_state) as provider_state,
@@ -54,7 +57,8 @@ with all_years as (
   select 
     date('2014-01-01') as service_year,
     apc,
-    cast(provider_id as int64) as provider_id,
+    left(apc, 4) as apc_code,
+    cast(provider_id as string) as provider_id,
     upper(provider_name) as provider_name,
     upper(provider_city) as provider_city,
     upper(provider_state) as provider_state,
@@ -70,7 +74,8 @@ with all_years as (
   select
     date('2015-01-01') as service_year,
     apc,
-    cast(provider_id as int64) as provider_id,
+    left(apc, 4) as apc_code,
+    cast(provider_id as string) as provider_id,
     upper(provider_name) as provider_name,
     upper(provider_city) as provider_city,
     upper(provider_state) as provider_state,
@@ -92,57 +97,27 @@ get_latest_name as (
   from all_years 
   group by provider_id
 
-),
+), divisions as (
 
-divisions as (
-
-  select *,
-    case
-      when provider_state in ('AK', 'CA', 'HI', 'OR', 'WA')
-        then 'Pacific'
-      when provider_state in ('AZ', 'CO', 'ID', 'MT', 'NV', 'NM', 'UT', 'WY')
-        then 'Mountain'
-      when provider_state in ('AR', 'LA', 'OK', 'TX')
-        then 'West South Central'
-      when provider_state in ('AL', 'KY', 'MS', 'TN')
-        then 'East South Central'
-      when provider_state in ('DE', 'FL', 'GA', 'MD', 'NC','SC', 'VA', 'WA', 'WV', 'DC')
-        then 'South Atlantic'
-      when provider_state in ('IA', 'KS', 'MN', 'MO', 'NE', 'ND', 'SD')
-        then 'West North Central'
-      when provider_state in ('IL', 'IN', 'MI', 'OH', 'WI')
-        then 'East North Central'
-      when provider_state in ('NJ', 'NY', 'PA')
-        then 'Middle Atlantic'
-      when provider_state in ('CT', 'ME', 'MA', 'NH', 'RI', 'VT')
-        then 'New England'
-      end as provider_division
+  select 
+    *,
+    {{ assign_division('provider_state', 'provider_division') }}
 
   from all_years
 
-),
+), regions as (
 
-regions as (
+  select 
+    *,
+    {{ assign_region('provider_division', 'provider_region') }}
 
-select *,
-  case
-    when provider_division in ('Pacific', 'Mountain')
-      then 'West'
-    when provider_division in ('West South Central', 'East South Central', 'South Atlantic')
-      then 'South'
-    when provider_division in ('West North Central', 'East North Central')
-      then 'Midwest'
-    when provider_division in ('Middle Atlantic', 'New England')
-      then 'Northeast'
-    end as provider_region
+  from divisions
 
-from divisions
-
-)
-
-select 
+) select 
   service_year,
   apc,
+  apc_code,
+  regions.provider_id || apc_code || service_year as uid,
   regions.provider_id,
   get_latest_name.latest_provider_name as provider_name,
   provider_city,

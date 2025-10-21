@@ -1,62 +1,67 @@
-version: 2
 models:
   - name: outpatient_charges
     meta:
+      primary_key: [uid]
       group_details:
         location:
-          label: Location
+          label: Provider Location
           description: >-
             These fields contain location data for each provider, like City and
             State.
         estimates:
           label: Estimate Metrics
           description: >-
-            These metrics are related to estimated charges. Most reports use Total Paid to show actual payments unless you are specifically analyzing estimates. 
+            These metrics are related to estimated charges. Most reports use
+            Total Paid to show actual payments unless you are specifically
+            analyzing estimates. 
+
+      joins:
+        - join: hospitals
+          type: left
+          sql_on: ${outpatient_charges.provider_id} = ${hospitals.provider_id}
+          relationship: many-to-one
+
       metrics:
         diff_estimate_vs_payment:
           type: number
-          format: usd
-          round: 0
+          format: [$$]#,##0.00
           groups:
             - estimates
           label: Total Estimate vs Total Payment
           sql: ${sum_total_estimated} - ${sum_total_paid}
         avg_estimated_per_service:
           type: number
-          format: usd
-          round: 0
+          format: [$$]#,##0.00
           groups:
             - estimates
           label: Average Estimated per Service
           sql: ${sum_total_estimated} / ${sum_number_services}
         avg_paid_per_service:
           type: number
-          format: usd
-          round: 0
+          format: [$$]#,##0.00
           label: Average Paid per Service
           sql: ${sum_total_paid} / ${sum_number_services}
         diff_avg_estimate_vs_avg_payment:
           type: number
-          format: usd
-          round: 0
+          format: [$$]#,##0.00
           groups:
             - estimates
           label: Average Estimate vs Average Payment
           sql: ${avg_estimated_per_service} - ${avg_paid_per_service}
         pct_estimate_vs_paid:
           type: number
-          format: percent
-          round: 0
+          format: #,##0.00%
           groups:
             - estimates
           label: Percent of Estimate Inflation vs Actual Paid
           sql: ${diff_estimate_vs_payment} / ${sum_total_paid}
+
     columns:
       - name: provider_id
         description: The distinct ID for each provider from the Medicare database.
         meta:
           dimension:
-            type: number
+            type: string
             format: id
             label: Provider ID
           metrics:
@@ -104,10 +109,11 @@ models:
               - location
       - name: provider_division
         description: >-
-          The US Division where this provider is located based on the State recorded
-          in the Medicare database. There are 9 divisions in the US: 
+          The US Division where this provider is located based on the State
+          recorded in the Medicare database. There are 9 divisions in the US: 
           New England, Middle Atlantic, East North Central, West North Central, 
-          South Atlantic, East South Central, West South Central, Mountain, and Pacific
+          South Atlantic, East South Central, West South Central, Mountain, and
+          Pacific
         meta:
           dimension:
             type: string
@@ -115,8 +121,8 @@ models:
               - location
       - name: provider_region
         description: >-
-          The US Region where this provider is located based on the State recorded
-          in the Medicare database. There are four regions in the US:
+          The US Region where this provider is located based on the State
+          recorded in the Medicare database. There are four regions in the US:
           Northest, Midwest, South, and West.
         meta:
           dimension:
@@ -138,7 +144,8 @@ models:
         meta:
           dimension:
             type: date
-            time_intervals: ['YEAR']
+            time_intervals:
+              - YEAR
       - name: apc
         description: >-
           Ambulatory payment classifications (APCs) are the method by which the
@@ -147,7 +154,7 @@ models:
           utilization, clinical intensity, and cost.
         meta:
           dimension:
-            label: "APC"
+            label: APC
             type: string
       - name: number_services
         description: >-
@@ -190,29 +197,26 @@ models:
             sum_total_paid:
               type: sum
               label: Total Paid
-              format: usd
-              round: 0
+              format: [$$]#,##0.00
               description: >-
                 The sum of the total amount paid by Medicare for the combination
                 of fields you have selected in your query.
             sum_total_paid_mm:
               type: sum
+              format: [$$]#,##0.00,,"M"
               label: Total Paid (Millions)
-              format: usd
-              compact: millions
-              round: 0
               description: >-
                 The sum of the total amount paid by Medicare for the combination
-                of fields you have selected in your query, compacted to millions.          
+                of fields you have selected in your query, compacted to
+                millions.          
             sum_total_paid_bn:
               type: sum
               label: Total Paid (Billions)
-              format: usd
-              compact: billions
-              round: 0
+              format: [$$]#,##0.00,,,"B"
               description: >-
                 The sum of the total amount paid by Medicare for the combination
-                of fields you have selected in your query, compacted to billions.          
+                of fields you have selected in your query, compacted to
+                billions.          
       - name: total_estimated
         description: >-
           Total estimated submitted charges (outpatient_services multiplied by
@@ -225,10 +229,9 @@ models:
             sum_total_estimated:
               type: sum
               label: Total Estimated
-              format: usd
+              format: [$$]#,##0.00
               groups:
                 - estimates
-              round: 0
               description: >-
                 The sum of the total estimated submitted charges by providers to
                 Medicare for the combination of fields you have selected in your
@@ -236,11 +239,9 @@ models:
             sum_total_estimated_mm:
               type: sum
               label: Total Estimated (Millions)
-              format: usd
-              compact: millions
+              format: [$$]#,##0.00,,"M"
               groups:
                 - estimates
-              round: 0
               description: >-
                 The sum of the total estimated submitted charges by providers to
                 Medicare for the combination of fields you have selected in your
@@ -248,12 +249,16 @@ models:
             sum_total_estimated_bn:
               type: sum
               label: Total Estimated (Billions)
-              format: usd
-              compact: billions
+              format: [$$]#,##0.00,,,"B"
               groups:
                 - estimates
-              round: 0
               description: >-
                 The sum of the total estimated submitted charges by providers to
                 Medicare for the combination of fields you have selected in your
                 query, compacted to billions.
+      - name: parsed_apc_level
+        description: "Level of the APC pulled out from the APC label"
+        meta:
+          dimension:
+            type: string
+            label: Parsed APC level

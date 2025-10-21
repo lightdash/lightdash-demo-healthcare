@@ -1,0 +1,209 @@
+models:
+  - name: stg_medicare__hospitals
+    config:
+      tags: ['stg']
+    columns:
+      - name: provider_id
+        description: "The Provider ID; primary key in this table"
+        tests:
+          - not_null
+          - unique
+        meta:
+          dimension:
+            type: string
+      - name: provider_name
+        description: "The name of the provider"
+        meta:
+          dimension:
+            type: string
+      - name: provider_address
+        description: "Street address for the provider"
+        meta:
+          dimension:
+            type: string
+      - name: provider_city
+        description: "The city of the provider"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: string
+      - name: provider_state
+        description: "The state of the provider"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: string
+      - name: provider_region
+        description: "The region of the provider"
+        meta:
+          dimension:
+            type: string
+            hidden: false
+      - name: provider_division
+        description: "The division of the provider"
+        meta:
+          dimension:
+            type: string
+            hidden: false
+      - name: provider_zip_code
+        description: "Postal ZIP code for the provider"
+        meta:
+          dimension:
+            type: string
+      - name: provider_county_name
+        description: "County name where the provider is located"
+        meta:
+          dimension:
+            type: string
+      - name: provider_phone_number
+        description: "Primary phone number for the provider"
+        meta:
+          dimension:
+            type: string
+      - name: hospital_type
+        description: "The type/category of the hospital"
+        meta:
+          dimension:
+            type: string
+      - name: hospital_ownership
+        description: "Ownership status of the hospital (e.g., Government, Non-profit, Proprietary)"
+        meta:
+          dimension:
+            type: string
+      - name: provides_emergency_services
+        description: "Indicates whether the hospital offers emergency services"
+        meta:
+          dimension:
+            type: boolean
+      - name: meets_criteria_for_meaningful_use_of_ehrs
+        description: "Whether the hospital meets criteria for meaningful use of electronic health records (EHRs)"
+        meta:
+          dimension:
+            type: boolean
+      - name: hospital_overall_rating
+        description: "Overall quality rating for the hospital (e.g., 1-5 or 'Not Available')"
+        meta:
+          dimension:
+            type: number
+      - name: mortality_group_measure_count
+        description: "Count or label for the mortality group measures used in summary calculations"
+        meta:
+          dimension:
+            type: number
+      - name: facility_mortaility_measures_count
+        description: "Number of facility-level mortality measures reported for this hospital"
+        meta:
+          dimension:
+            type: number
+      - name: mortality_measures_better_count
+        description: "Number of mortality measures where the hospital performed better than the national baseline"
+        meta:
+          dimension:
+            type: number
+      - name: mortality_measures_no_different_count
+        description: "Number of mortality measures where the hospital performance was not different from the national baseline"
+        meta:
+          dimension:
+            type: number
+      - name: mortality_measures_worse_count
+        description: "Number of mortality measures where the hospital performed worse than the national baseline"
+        meta:
+          dimension:
+            type: number
+      - name: mortaility_group_footnote
+        description: "Footnote text providing context for mortality group measures"
+        meta:
+          dimension:
+            type: number
+      - name: safety_measures_count
+        description: "Count or label for the safety group measures used in summary calculations"
+        meta:
+          dimension:
+            type: number
+      - name: facility_care_safety_measures_count
+        description: "Number of facility-level safety measures reported for this hospital"
+        meta:
+          dimension:
+            type: number
+      - name: safety_measures_better_count
+        description: "Number of safety measures where the hospital performed better than the national baseline"
+        meta:
+          dimension:
+            type: number
+      - name: safety_measures_no_different_count
+        description: "Number of safety measures where the hospital performance was not different from the national baseline"
+        meta:
+          dimension:
+            type: number
+      - name: safety_measures_worse_count
+        description: "Number of safety measures where the hospital performed worse than the national baseline"
+        meta:
+          dimension:
+            type: number
+      - name: safety_group_footnote
+        description: "Footnote text providing context for safety group measures"
+        meta:
+          dimension:
+            type: number
+      - name: readmission_measures_count
+        description: "Count or label for the readmission group measures used in summary calculations"
+        meta:
+          dimension:
+            type: number
+      - name: facility_readmission_measures_count
+        description: "Number of facility-level readmission measures reported for this hospital"
+        meta:
+          dimension:
+            type: number
+      - name: readmission_measures_better_count
+        description: "Number of readmission measures where the hospital performed better than the national baseline"
+        meta:
+          dimension:
+            type: number
+      - name: readmission_measures_no_different_count
+        description: "Number of readmission measures with no significant difference from the national baseline"
+        meta:
+          dimension:
+            type: number
+      - name: readmission_measures_worse_count
+        description: "Number of readmission measures where the hospital performed worse than the national baseline"
+        meta:
+          dimension:
+            type: number
+      - name: readmission_measures_footnote
+        description: "Footnote text providing context for readmission measures"
+        meta:
+          dimension:
+            type: number
+      - name: patient_experience_measures_count
+        description: "Count or label for the patient experience measures used in summary calculations"
+        meta:
+          dimension:
+            type: number
+      - name: facility_patient_experience_measures_count
+        description: "Number of facility-level patient experience measures reported for this hospital"
+        meta:
+          dimension:
+            type: number
+      - name: patient_experience_measures_footnote
+        description: "Footnote text providing context for patient experience measures"
+        meta:
+          dimension:
+            type: number
+      - name: timely_and_effective_care_measures_count
+        description: "Count or label for timely and effective care measures used in summary calculations"
+        meta:
+          dimension:
+            type: number
+      - name: facility_timely_and_effective_care_measures_count
+        description: "Number of facility-level timely and effective care measures reported for this hospital"
+        meta:
+          dimension:
+            type: number
+      - name: timely_and_effective_care_measures_footnote
+        description: "Footnote text providing context for timely and effective care measures"
+        meta:
+          dimension:
+            type: number

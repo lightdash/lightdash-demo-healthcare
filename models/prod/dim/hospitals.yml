@@ -1,0 +1,406 @@
+models:
+  - name: hospitals
+    description: "Dimension table for hospitals, AKA: providers"
+    config:
+      tags: ['prod']
+    meta:
+      primary_key: [provider_id]
+      group_details:
+        averages:
+          label: Averages
+          description: >-
+            These metrics are related to averages.
+        totals:
+          label: Totals
+          description: >-
+            These metrics are related to totals and counts.
+        efficiency:
+          label: Efficiency
+          description: >-
+            These metrics are related to hospital efficiency measures.
+        raw_counts:
+          label: Raw Counts
+          description: >-
+            These fields are raw counts from the Medicare database without any calculations applied.
+        better_counts:
+          label: Better Counts
+          description: >-
+            These fields represent counts of measures where the hospital performed better than average.
+        worse_counts:
+          label: Worse Counts
+          description: >-
+            These fields represent counts of measures where the hospital performed worse than average.
+        location:
+          label: Provider Location
+          description: >-
+            These fields contain location data for each hospital, like City, State, Division, and Region.
+
+      parameters:
+        hospitals_dim_toggle:
+              label: "State/Region/Division"
+              description: >-
+                Toggle to include State, Region, and Division dimensions in your analysis.
+              options:
+                - "provider_state"
+                - "provider_region"
+                - "provider_division"
+              default: "provider_division"
+              multiple: false
+
+      metrics:
+        mortality_measures_better_pct:
+          type: number
+          sql: ${total_mortality_measures_better} / NULLIF(${total_mortality_measures}, 0)
+          format: percent
+          label: "% Mortality Measures Better than Avg"
+          groups:
+            - efficiency
+          description: "Ratio of mortality measures that are better than the national average"
+        mortality_measures_worse_pct:
+          type: number
+          sql: ${total_mortality_measures_worse} / NULLIF(${total_mortality_measures}, 0)
+          format: percent
+          label: "% Mortality Measures Worse than Avg"
+          groups:
+            - efficiency
+          description: "Ratio of mortality measures that are worse than the national average"
+        safety_measures_better_pct:
+          type: number
+          sql: ${total_safety_measures_better} / NULLIF(${total_safety_measures}, 0)
+          format: percent
+          label: "% Safety Measures Better than Avg"
+          groups:
+            - efficiency
+          description: "Ratio of safety measures that are better than the national average"
+        safety_measures_worse_pct:
+          type: number
+          sql: ${total_safety_measures_worse} / NULLIF(${total_safety_measures}, 0)
+          format: percent
+          label: "% Safety Measures Worse than Avg"
+          groups:
+            - efficiency
+          description: "Ratio of safety measures that are worse than the national average"
+        readmission_measures_better_pct:
+          type: number
+          sql: ${total_readmission_measures_better} / NULLIF(${total_readmission_measures}, 0)
+          format: percent
+          label: "% Readmission Measures Better than Avg"
+          groups:
+            - efficiency
+          description: "Ratio of readmission measures that are better than the national average"
+        readmission_measures_worse_pct:
+          type: number
+          sql: ${total_readmission_measures_worse} / NULLIF(${total_readmission_measures}, 0)
+          format: percent
+          label: "% Readmission Measures Worse than Avg"
+          groups:
+            - efficiency
+          description: "Ratio of readmission measures that are worse than the national average"
+
+    columns:
+      - name: provider_id
+        description: "The Provider ID; primary key for hospitals"
+        tests:
+          - not_null
+          - unique
+        meta:
+          dimension:
+            type: string
+            hidden: false
+      - name: provider_name
+        description: "Hospital name"
+        meta:
+          dimension:
+            type: string
+            hidden: false
+      - name: provider_address
+        description: "Hospital street address"
+        meta:
+          dimension:
+            type: string
+            hidden: true
+            groups:
+              - location
+      - name: provider_city
+        description: "City where the hospital is located"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: string
+            hidden: false
+            groups:
+              - location
+      - name: provider_state
+        description: "State where the hospital is located"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: string
+            hidden: false
+            groups:
+              - location
+      - name: provider_region
+        description: "Region where the hospital is located"
+        meta:
+          dimension:
+            type: string
+            hidden: false
+            groups:
+              - location
+      - name: provider_division
+        description: "Division where the hospital is located"
+        meta:
+          dimension:
+            type: string
+            hidden: false
+            groups:
+              - location
+      - name: provider_zip_code
+        description: "Postal ZIP code for the hospital"
+        meta:
+          dimension:
+            type: string
+            hidden: true
+            groups:
+              - location
+      - name: provider_county_name
+        description: "County name where the hospital is located"
+        meta:
+          dimension:
+            type: string
+            hidden: true
+            groups:
+              - location
+      - name: provider_phone_number
+        description: "Primary contact phone number for the hospital"
+        meta:
+          dimension:
+            type: string
+            hidden: true
+      - name: hospital_type
+        description: "Hospital type/category"
+        meta:
+          dimension:
+            type: string
+            hidden: false
+      - name: hospital_ownership
+        description: "Ownership type of the hospital (e.g., Government, Non-profit, Proprietary)"
+        meta:
+          dimension:
+            type: string
+            hidden: false
+      - name: provides_emergency_services
+        description: "Whether the hospital provides emergency services"
+        meta:
+          dimension:
+            type: boolean
+            hidden: false
+      - name: meets_criteria_for_meaningful_use_of_ehrs
+        description: "Whether the hospital meets meaningful use criteria for EHRs"
+        meta:
+          dimension:
+            type: boolean
+            hidden: true
+      - name: facility_mortality_measures_count
+        description: "Number of mortality measures reported for the hospital"
+        meta:
+          dimension:
+            type: number
+            hidden: true
+            groups:
+              - raw_counts
+          metrics:
+            total_mortality_measures:
+              type: sum
+              label: Total Mortality Measures
+              format: "0.00"
+              groups:
+                - totals
+              description: >-
+                The total number of mortality measures reported for the hospital.
+      - name: mortality_measures_better_count
+        description: "The number of measures where the hospital has gotten a better score than average on mortality measures"
+        meta:
+          dimension:
+            type: number
+            hidden: true
+            groups:
+              - better_counts
+          metrics:
+            total_mortality_measures_better:
+              type: sum
+              label: Total Mortality Measures Better
+              format: "0.00"
+              groups:
+                - totals
+              description: >-
+                The total number of mortality measures which were better than reported at other hospitals.
+      - name: mortality_measures_worse_count
+        description: "The number of measures where the hospital has gotten a worse score than average on mortality measures"
+        meta:
+          dimension:
+            type: number
+            hidden: true
+            groups:
+              - worse_counts
+          metrics:
+            total_mortality_measures_worse:
+              type: sum
+              label: Total Mortality Measures Worse
+              format: "0.00"
+              groups:
+                - totals
+              description: >-
+                The total number of mortality measures which were worse than reported at other hospitals.
+      - name: hospital_overall_rating
+        description: "Overall rating of the hospital (1-5 scale)"
+        meta:
+          dimension:
+            type: number
+            hidden: true
+          metrics:
+            avg_hospital_overall_rating:
+              type: average
+              label: Average Hospital Rating
+              groups:
+                - averages
+              description: >-
+                The average overall rating for the hospital based on patient reviews.
+      - name: facility_care_safety_measures_count
+        description: "Number of safety measures reported for the hospital"
+        meta:
+          dimension:
+            type: number
+            hidden: false
+            groups:
+              - raw_counts
+          metrics:
+            total_safety_measures:
+              type: sum
+              label: Total Safety Measures
+              format: "0.00"
+              groups:
+                - totals
+              description: >-
+                The total number of safety measures reported for the hospital.
+      - name: safety_measures_better_count
+        description: "Number of safety measures reported better than other hospitals"
+        meta:
+          dimension:
+            type: number
+            hidden: false
+            groups:
+              - better_counts
+          metrics:
+            total_safety_measures_better:
+              type: sum
+              label: Total Safety Measures Better
+              format: "0.00"
+              groups:
+                - totals
+              description: >-
+                The total number of safety measures reported better than other hospitals.
+      - name: safety_measures_worse_count
+        description: "Number of safety measures reported worse than other hospitals"
+        meta:
+          dimension:
+            type: number
+            hidden: false
+            groups:
+              - worse_counts
+          metrics:
+            total_safety_measures_worse:
+              type: sum
+              label: Total Safety Measures Worse
+              format: "0.00"
+              groups:
+                - totals
+              description: >-
+                The total number of safety measures reported worse than other hospitals.
+      - name: facility_readmission_measures_count
+        description: "Number of readmission measures reported for the hospital"
+        meta:
+          dimension:
+            type: number
+            hidden: false
+            groups:
+              - raw_counts
+          metrics:
+            total_readmission_measures:
+              type: sum
+              label: Total Readmission Measures
+              format: "0.00"
+              groups:
+                - totals
+              description: >-
+                The total number of readmission measures reported for the hospital.
+      - name: readmission_measures_better_count
+        description: "Number of readmission measures reported better than other hospitals"
+        meta:
+          dimension:
+            type: number
+            hidden: false
+            groups:
+              - better_counts
+          metrics: 
+            total_readmission_measures_better:
+              type: sum
+              label: Total Readmission Measures Better
+              format: "0.00"
+              groups:
+                - totals
+              description: >-
+                The total number of readmission measures reported better than other hospitals.
+      - name: readmission_measures_worse_count
+        description: "Number of readmission measures reported worse than other hospitals"
+        meta:
+          dimension: 
+            type: number
+            hidden: false
+            groups:
+              - worse_counts
+          metrics:
+            total_readmission_measures_worse:
+              type: sum
+              label: Total Readmission Measures Worse
+              format: "0.00"
+              groups:
+                - totals
+              description: >-
+                The total number of readmission measures reported worse than other hospitals.
+      - name: facility_patient_experience_measures_count
+        description: "Number of patient experience measures reported for the hospital"
+        meta:
+          dimension:
+            type: number
+            hidden: false
+            groups:
+              - raw_counts
+          metrics:
+            total_patient_experience_measures:
+              type: sum
+              label: Total Patient Experience Measures
+              format: "0.00"
+              groups:
+                - totals
+              description: >-
+                The total number of patient experience measures reported for the hospital.
+      - name: facility_timely_and_effective_care_measures_count
+        description: "Number of timely and effective care measures reported for the hospital"
+        meta:
+          dimension:
+            type: number
+            hidden: false
+            groups:
+              - raw_counts
+          metrics:
+            total_timely_effective_measures:
+              type: sum
+              label: Total Timely & Effective Care Measures
+              format: "0.00"
+              groups:
+                - totals
+              description: >-
+                The total number of timely and effective care measures reported for the hospital.

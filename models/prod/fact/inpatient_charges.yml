@@ -1,0 +1,129 @@
+models:
+  - name: inpatient_charges
+    meta:
+      primary_key: [uid]
+      group_details:
+        location:
+          label: Provider Location
+          description: >-
+            These fields contain location data for each provider, like City, State, Division, and Region.
+        estimates:
+          label: Estimate Metrics
+          description: >-
+            Metrics related to estimated charges. For inpatient, most reporting focuses on total Medicare payments versus total charges.
+
+      joins:
+        - join: hospitals
+          type: left
+          sql_on: ${inpatient_charges.provider_id} = ${hospitals.provider_id}
+          relationship: many-to-one
+
+      metrics:
+        avg_charged_per_discharge:
+          type: number
+          format: [$$]#,##0.00
+          groups:
+            - estimates
+          label: Average Charged per Discharge
+          sql: ${sum_total_charged} / ${sum_total_discharges}
+
+    columns:
+      - name: service_year
+        description: The year in which the inpatient service was completed.
+        meta:
+          dimension:
+            type: date
+            time_intervals:
+              - YEAR
+      - name: provider_id
+        description: Unique ID for each provider.
+        meta:
+          dimension:
+            type: string
+            format: id
+      - name: provider_name
+        description: Official provider name from the Medicare database.
+        meta:
+          dimension:
+            type: string
+            hidden: true
+      - name: provider_name_and_id
+        description: Combined provider name and ID for reporting consistency.
+        meta:
+          dimension:
+            type: string
+      - name: provider_city
+        description: City where the provider is located.
+        meta:
+          dimension:
+            type: string
+            groups:
+              - location
+      - name: provider_state
+        description: State where the provider is located.
+        meta:
+          dimension:
+            type: string
+            groups:
+              - location
+      - name: provider_division
+        description: US Division based on provider state (e.g., New England, Pacific, etc.).
+        meta:
+          dimension:
+            type: string
+            groups:
+              - location
+      - name: provider_region
+        description: US Region based on provider division (Northeast, Midwest, South, West).
+        meta:
+          dimension:
+            type: string
+            groups:
+              - location
+      - name: hospital_referral_region_description
+        description: Hospital referral region where the provider is located.
+        meta:
+          dimension:
+            type: string
+            groups:
+              - location
+      - name: total_discharges
+        description: Total number of inpatient discharges for the provider in that year.
+        meta:
+          dimension:
+            type: number
+            hidden: true
+          metrics:
+            sum_total_discharges:
+              type: sum
+              label: Total Discharges
+      - name: average_covered_charges
+        description: Average covered charges billed per discharge.
+        meta:
+          dimension:
+            type: number
+            hidden: true
+      - name: average_total_payments
+        description: Average total payments for inpatient services.
+        meta:
+          dimension:
+            type: number
+            hidden: true
+      - name: average_medicare_payments
+        description: Average Medicare payments per discharge.
+        meta:
+          dimension:
+            type: number
+            hidden: true
+      - name: total_charged
+        description: Total charges (average_covered_charges * total_discharges).
+        meta:
+          dimension:
+            type: number
+            hidden: true
+          metrics:
+            sum_total_charged:
+              type: sum
+              format: [$$]#,##0.00
+              label: Sum Total Charged
+

@@ -1,5 +1,3 @@
-version: 2
-
 sources:
   - name: medicare
     description: This source is pulling public Medicare data directly from BigQuery public datasets
@@ -11,3 +9,15 @@ sources:
       - name: outpatient_charges_2013
       - name: outpatient_charges_2014
       - name: outpatient_charges_2015
+      - name: inpatient_charges_2011
+      - name: inpatient_charges_2012
+      - name: inpatient_charges_2013
+      - name: inpatient_charges_2014
+      - name: inpatient_charges_2015
+      - name: physicians_and_other_supplier_2012
+      - name: physicians_and_other_supplier_2013
+      - name: physicians_and_other_supplier_2014
+      - name: physicians_and_other_supplier_2015
+      - name: hospital_general_info
+
+

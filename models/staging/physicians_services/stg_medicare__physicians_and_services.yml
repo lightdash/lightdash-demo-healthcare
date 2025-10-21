@@ -1,0 +1,133 @@
+models:
+  - name: stg_medicare__physicians_and_services
+    config:
+      tags: ['stg']
+    columns:
+      - name: uid
+        description: "A combination of the NPI ID and the HCPCS service code to create a unique identifier"
+        tests:
+          - not_null
+          - unique
+        meta:
+          dimension:
+            type: number
+      - name: physician_id
+        description: "Based on the NPI ID; unique in combination with service code"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: number
+      - name: physician_last_name
+        description: "Last name of the physician"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: string
+      - name: physician_first_name
+        description: "First name of the physician"
+        meta:
+          dimension:
+            type: string
+      - name: physician_credentials
+        description: "The official titile of the physician, like MD, PA, RN"
+        meta:
+          dimension:
+            type: string
+      - name: physician_gender
+        description: "Gender of the physician"
+        meta:
+          dimension:
+            type: string
+      - name: physician_city
+        description: "The city of the physician"
+        meta:
+          dimension:
+            type: string
+      - name: physician_state
+        description: "The state if the physician"
+        meta:
+          dimension:
+            type: string
+      - name: physician_division
+        description: "Physician division, constructed with a CASE WHEN utilizing the physician state"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: string
+      - name: physician_region
+        description: "The region of the physician, constructed with a CASE WHEN utlizing the physician division"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: string
+      - name: physician_type
+        description: "The type of service the physician is dedicated to"
+        meta:
+          dimension:
+            type: string
+      - name: is_medicare_participant
+        description: "A boolean stating whether the physician participates in medicare"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: boolean
+      - name: service_code
+        description: ""
+        meta:
+          dimension:
+            type: string
+      - name: service_description
+        description: "A description if the service connected to the service code, e.g.: Anethseia for procedure on eyelid"
+        meta:
+          dimension:
+            type: string
+      - name: drug_indicator
+        description: "A string Y or N indicating whether the physician provides perscriptions"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: string
+      - name: line_srvc_cnt
+        description: ""
+        meta:
+          dimension:
+            type: number
+      - name: bene_unique_cnt
+        description: "Number of unique benefits provided"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: number
+      - name: bene_day_srvc_cnt
+        description: "Number of services provided"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: number
+      - name: avg_medicare_allowed_amt
+        description: "The average medicare allowed amount for the physician"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: number
+      - name: avg_submitted_chrg_amt
+        description: "The average submitted charge amount per physician"
+        meta:
+          dimension:
+            type: number
+      - name: avg_medicare_payment_amt
+        description: "The average medicare payment amount per physician"
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: number
