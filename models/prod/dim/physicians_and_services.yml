@@ -85,11 +85,9 @@ models:
             type: string
             groups:
               - descriptors
-      - name: physician_name_and_id
+      - name: physician_full_name
         description: >-
-          A combination of the physician First Name and ID fields to ensure queries
-          that require showing physician Name are not accidentally duplicating
-          physicians with the same name.
+          A combination of the physician First Name, Last Name, and credentials fields to identify top performing physicians.
         meta:
           dimension:
             label: Physician Name
