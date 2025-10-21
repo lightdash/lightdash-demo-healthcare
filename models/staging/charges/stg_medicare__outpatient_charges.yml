@@ -14,7 +14,6 @@ models:
         meta:
           dimension:
             type: string
-            hidden: true
       - name: uid
         description: "Unique identifier for each record, composed of provider ID, APC Code, and service year"
         tests:
@@ -23,7 +22,6 @@ models:
         meta:
           dimension:
             type: string
-            hidden: true
       - name: provider_id
         description: "The Provider ID; primary key in this table"
         tests:
@@ -31,37 +29,31 @@ models:
         meta:
           dimension:
             type: string
-            hidden: true
       - name: provider_name
         description: "The name of the provider"
         meta:
           dimension:
             type: string
-            hidden: true
       - name: provider_city
         description: "City where the provider is located"
         meta:
           dimension:
             type: string
-            hidden: true
       - name: provider_state
         description: "State where the provider is located"
         meta:
           dimension:
             type: string
-            hidden: true
       - name: hospital_referral_region
         description: "Hospital referral region for the provider"
         meta:
           dimension:
             type: string
-            hidden: true
       - name: apc
         description: "Ambulatory Payment Classification (APC) code for the outpatient service"
         meta:
           dimension:
             type: string
-            hidden: true
       - name: apc_code
         description: "APC code used for uniqueness testing and mapping to charges"
         tests:
@@ -69,7 +61,6 @@ models:
         meta:
           dimension:
             type: string
-            hidden: true
       - name: number_services
         description: "Number of services provided for the APC"
         tests:
@@ -77,19 +68,16 @@ models:
         meta:
           dimension:
             type: number
-            hidden: true
       - name: total_paid
         description: "Total paid amount by Medicare for the APC"
         meta:
           dimension:
             type: number
-            hidden: true
       - name: total_estimated
         description: "Estimated total charges for the APC"
         meta:
           dimension:
             type: number
-            hidden: true
       - name: service_year
         description: "Year of service"
         tests:
@@ -97,4 +85,3 @@ models:
         meta:
           dimension:
             type: number
-            hidden: true

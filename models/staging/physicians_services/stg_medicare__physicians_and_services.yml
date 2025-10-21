@@ -11,7 +11,6 @@ models:
         meta:
           dimension:
             type: number
-            hidden: true
       - name: physician_id
         description: "Based on the NPI ID; unique in combination with service code"
         tests:
@@ -19,7 +18,6 @@ models:
         meta:
           dimension:
             type: number
-            hidden: true
       - name: physician_last_name
         description: "Last name of the physician"
         tests:
@@ -27,37 +25,31 @@ models:
         meta:
           dimension:
             type: string
-            hidden: true
       - name: physician_first_name
         description: "First name of the physician"
         meta:
           dimension:
             type: string
-            hidden: true
       - name: physician_credentials
         description: "The official titile of the physician, like MD, PA, RN"
         meta:
           dimension:
             type: string
-            hidden: true
       - name: physician_gender
         description: "Gender of the physician"
         meta:
           dimension:
             type: string
-            hidden: true
       - name: physician_city
         description: "The city of the physician"
         meta:
           dimension:
             type: string
-            hidden: true
       - name: physician_state
         description: "The state if the physician"
         meta:
           dimension:
             type: string
-            hidden: true
       - name: physician_division
         description: "Physician division, constructed with a CASE WHEN utilizing the physician state"
         tests:
@@ -65,7 +57,6 @@ models:
         meta:
           dimension:
             type: string
-            hidden: true
       - name: physician_region
         description: "The region of the physician, constructed with a CASE WHEN utlizing the physician division"
         tests:
@@ -73,13 +64,11 @@ models:
         meta:
           dimension:
             type: string
-            hidden: true
       - name: physician_type
         description: "The type of service the physician is dedicated to"
         meta:
           dimension:
             type: string
-            hidden: true
       - name: is_medicare_participant
         description: "A boolean stating whether the physician participates in medicare"
         tests:
@@ -87,19 +76,16 @@ models:
         meta:
           dimension:
             type: boolean
-            hidden: true
       - name: service_code
         description: ""
         meta:
           dimension:
             type: string
-            hidden: true
       - name: service_description
         description: "A description if the service connected to the service code, e.g.: Anethseia for procedure on eyelid"
         meta:
           dimension:
             type: string
-            hidden: true
       - name: drug_indicator
         description: "A string Y or N indicating whether the physician provides perscriptions"
         tests:
@@ -107,13 +93,11 @@ models:
         meta:
           dimension:
             type: string
-            hidden: true
       - name: line_srvc_cnt
         description: ""
         meta:
           dimension:
             type: number
-            hidden: true
       - name: bene_unique_cnt
         description: "Number of unique benefits provided"
         tests:
@@ -121,7 +105,6 @@ models:
         meta:
           dimension:
             type: number
-            hidden: true
       - name: bene_day_srvc_cnt
         description: "Number of services provided"
         tests:
@@ -129,7 +112,6 @@ models:
         meta:
           dimension:
             type: number
-            hidden: true
       - name: avg_medicare_allowed_amt
         description: "The average medicare allowed amount for the physician"
         tests:
@@ -137,13 +119,11 @@ models:
         meta:
           dimension:
             type: number
-            hidden: true
       - name: avg_submitted_chrg_amt
         description: "The average submitted charge amount per physician"
         meta:
           dimension:
             type: number
-            hidden: true
       - name: avg_medicare_payment_amt
         description: "The average medicare payment amount per physician"
         tests:
@@ -151,4 +131,3 @@ models:
         meta:
           dimension:
             type: number
-            hidden: true
