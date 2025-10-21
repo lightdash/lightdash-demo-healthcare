@@ -6,7 +6,8 @@ with all_years as (
   select 
     date('2011-01-01') as service_year,
     apc,
-    cast(provider_id as int64) as provider_id,
+    left(apc, 4) as apc_code,
+    cast(provider_id as string) as provider_id,
     upper(provider_name) as provider_name,
     upper(provider_city) as provider_city,
     upper(provider_state) as provider_state,
@@ -22,7 +23,8 @@ with all_years as (
   select 
     date('2012-01-01') as service_year,
     apc,
-    cast(provider_id as int64) as provider_id,
+    left(apc, 4) as apc_code,
+    cast(provider_id as string) as provider_id,
     upper(provider_name) as provider_name,
     upper(provider_city) as provider_city,
     upper(provider_state) as provider_state,
@@ -38,7 +40,8 @@ with all_years as (
   select 
     date('2013-01-01') as service_year,
     apc,
-    cast(provider_id as int64) as provider_id,
+    left(apc, 4) as apc_code,
+    cast(provider_id as string) as provider_id,
     upper(provider_name) as provider_name,
     upper(provider_city) as provider_city,
     upper(provider_state) as provider_state,
@@ -54,7 +57,8 @@ with all_years as (
   select 
     date('2014-01-01') as service_year,
     apc,
-    cast(provider_id as int64) as provider_id,
+    left(apc, 4) as apc_code,
+    cast(provider_id as string) as provider_id,
     upper(provider_name) as provider_name,
     upper(provider_city) as provider_city,
     upper(provider_state) as provider_state,
@@ -70,7 +74,8 @@ with all_years as (
   select
     date('2015-01-01') as service_year,
     apc,
-    cast(provider_id as int64) as provider_id,
+    left(apc, 4) as apc_code,
+    cast(provider_id as string) as provider_id,
     upper(provider_name) as provider_name,
     upper(provider_city) as provider_city,
     upper(provider_state) as provider_state,
@@ -111,6 +116,8 @@ get_latest_name as (
 ) select 
   service_year,
   apc,
+  apc_code,
+  regions.provider_id || apc_code || service_year as uid,
   regions.provider_id,
   get_latest_name.latest_provider_name as provider_name,
   provider_city,
