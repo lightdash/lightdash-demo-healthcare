@@ -4,7 +4,7 @@ models:
     config:
       tags: ['prod']
     meta:
-      primary_key: [provider_id]
+      primary_key: provider_id
       group_details:
         averages:
           label: Averages
@@ -51,7 +51,7 @@ models:
         mortality_measures_better_pct:
           type: number
           sql: ${total_mortality_measures_better} / NULLIF(${total_mortality_measures}, 0)
-          format: percent
+          format: '#,##0.00%'
           label: "% Mortality Measures Better than Avg"
           groups:
             - efficiency
@@ -59,7 +59,7 @@ models:
         mortality_measures_worse_pct:
           type: number
           sql: ${total_mortality_measures_worse} / NULLIF(${total_mortality_measures}, 0)
-          format: percent
+          format: '#,##0.00%'
           label: "% Mortality Measures Worse than Avg"
           groups:
             - efficiency
@@ -67,7 +67,7 @@ models:
         safety_measures_better_pct:
           type: number
           sql: ${total_safety_measures_better} / NULLIF(${total_safety_measures}, 0)
-          format: percent
+          format: '#,##0.00%'
           label: "% Safety Measures Better than Avg"
           groups:
             - efficiency
@@ -75,7 +75,7 @@ models:
         safety_measures_worse_pct:
           type: number
           sql: ${total_safety_measures_worse} / NULLIF(${total_safety_measures}, 0)
-          format: percent
+          format: '#,##0.00%'
           label: "% Safety Measures Worse than Avg"
           groups:
             - efficiency
@@ -83,7 +83,7 @@ models:
         readmission_measures_better_pct:
           type: number
           sql: ${total_readmission_measures_better} / NULLIF(${total_readmission_measures}, 0)
-          format: percent
+          format: '#,##0.00%'
           label: "% Readmission Measures Better than Avg"
           groups:
             - efficiency
@@ -91,7 +91,7 @@ models:
         readmission_measures_worse_pct:
           type: number
           sql: ${total_readmission_measures_worse} / NULLIF(${total_readmission_measures}, 0)
-          format: percent
+          format: '#,##0.00%'
           label: "% Readmission Measures Worse than Avg"
           groups:
             - efficiency
@@ -215,7 +215,7 @@ models:
             total_mortality_measures:
               type: sum
               label: Total Mortality Measures
-              format: "0.00"
+              format: '0'
               groups:
                 - totals
               description: >-
@@ -232,7 +232,7 @@ models:
             total_mortality_measures_better:
               type: sum
               label: Total Mortality Measures Better
-              format: "0.00"
+              format: '0'
               groups:
                 - totals
               description: >-
@@ -249,7 +249,7 @@ models:
             total_mortality_measures_worse:
               type: sum
               label: Total Mortality Measures Worse
-              format: "0.00"
+              format: '0'
               groups:
                 - totals
               description: >-
@@ -280,7 +280,7 @@ models:
             total_safety_measures:
               type: sum
               label: Total Safety Measures
-              format: "0.00"
+              format: '0'
               groups:
                 - totals
               description: >-
@@ -297,7 +297,7 @@ models:
             total_safety_measures_better:
               type: sum
               label: Total Safety Measures Better
-              format: "0.00"
+              format: '0'
               groups:
                 - totals
               description: >-
@@ -314,7 +314,7 @@ models:
             total_safety_measures_worse:
               type: sum
               label: Total Safety Measures Worse
-              format: "0.00"
+              format: '0'
               groups:
                 - totals
               description: >-
@@ -331,7 +331,7 @@ models:
             total_readmission_measures:
               type: sum
               label: Total Readmission Measures
-              format: "0.00"
+              format: '0'
               groups:
                 - totals
               description: >-
@@ -348,7 +348,7 @@ models:
             total_readmission_measures_better:
               type: sum
               label: Total Readmission Measures Better
-              format: "0.00"
+              format: '0'
               groups:
                 - totals
               description: >-
@@ -365,7 +365,7 @@ models:
             total_readmission_measures_worse:
               type: sum
               label: Total Readmission Measures Worse
-              format: "0.00"
+              format: '0'
               groups:
                 - totals
               description: >-
@@ -382,7 +382,7 @@ models:
             total_patient_experience_measures:
               type: sum
               label: Total Patient Experience Measures
-              format: "0.00"
+              format: '0'
               groups:
                 - totals
               description: >-
@@ -399,7 +399,7 @@ models:
             total_timely_effective_measures:
               type: sum
               label: Total Timely & Effective Care Measures
-              format: "0.00"
+              format: '0'
               groups:
                 - totals
               description: >-

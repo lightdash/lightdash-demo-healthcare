@@ -1,7 +1,7 @@
 models:
   - name: outpatient_charges
     meta:
-      primary_key: [uid]
+      primary_key: uid
       group_details:
         location:
           label: Provider Location
@@ -13,56 +13,61 @@ models:
           description: >-
             These metrics are related to estimated charges. Most reports use
             Total Paid to show actual payments unless you are specifically
-            analyzing estimates. 
-
-      joins:
-        - join: hospitals
-          type: left
-          sql_on: ${outpatient_charges.provider_id} = ${hospitals.provider_id}
-          relationship: many-to-one
+            analyzing estimates.
 
       metrics:
         diff_estimate_vs_payment:
           type: number
-          format: [$$]#,##0.00
+          format: '[$$]#,##0.00'
           groups:
             - estimates
           label: Total Estimate vs Total Payment
           sql: ${sum_total_estimated} - ${sum_total_paid}
         avg_estimated_per_service:
           type: number
-          format: [$$]#,##0.00
+          format: '[$$]#,##0.00'
           groups:
             - estimates
           label: Average Estimated per Service
           sql: ${sum_total_estimated} / ${sum_number_services}
         avg_paid_per_service:
           type: number
-          format: [$$]#,##0.00
+          format: '[$$]#,##0.00'
           label: Average Paid per Service
           sql: ${sum_total_paid} / ${sum_number_services}
         diff_avg_estimate_vs_avg_payment:
           type: number
-          format: [$$]#,##0.00
+          format: '[$$]#,##0.00'
           groups:
             - estimates
           label: Average Estimate vs Average Payment
           sql: ${avg_estimated_per_service} - ${avg_paid_per_service}
         pct_estimate_vs_paid:
           type: number
-          format: #,##0.00%
+          format: '#,##0.00%'
           groups:
             - estimates
           label: Percent of Estimate Inflation vs Actual Paid
           sql: ${diff_estimate_vs_payment} / ${sum_total_paid}
 
+      joins: 
+        - join: hospitals 
+          type: left 
+          sql_on: ${outpatient_charges.provider_id} = ${hospitals.provider_id} 
+          relationship: many-to-one
+
     columns:
+      - name: uid
+        description: The primary unique identifier for each outpatient charge record.
+        meta:
+          dimension:
+            type: string
+            label: UID
       - name: provider_id
         description: The distinct ID for each provider from the Medicare database.
         meta:
           dimension:
             type: string
-            format: id
             label: Provider ID
           metrics:
             count_distinct_provider_id:
@@ -197,13 +202,13 @@ models:
             sum_total_paid:
               type: sum
               label: Total Paid
-              format: [$$]#,##0.00
+              format: '[$$]#,##0.00'
               description: >-
                 The sum of the total amount paid by Medicare for the combination
                 of fields you have selected in your query.
             sum_total_paid_mm:
               type: sum
-              format: [$$]#,##0.00,,"M"
+              format: '[$$]#,##0.00,,"M"'
               label: Total Paid (Millions)
               description: >-
                 The sum of the total amount paid by Medicare for the combination
@@ -212,7 +217,7 @@ models:
             sum_total_paid_bn:
               type: sum
               label: Total Paid (Billions)
-              format: [$$]#,##0.00,,,"B"
+              format: '[$$]#,##0.00,,,"B"'
               description: >-
                 The sum of the total amount paid by Medicare for the combination
                 of fields you have selected in your query, compacted to
@@ -229,7 +234,7 @@ models:
             sum_total_estimated:
               type: sum
               label: Total Estimated
-              format: [$$]#,##0.00
+              format: '[$$]#,##0.00'
               groups:
                 - estimates
               description: >-
@@ -239,7 +244,7 @@ models:
             sum_total_estimated_mm:
               type: sum
               label: Total Estimated (Millions)
-              format: [$$]#,##0.00,,"M"
+              format: '[$$]#,##0.00,,"M"'
               groups:
                 - estimates
               description: >-
@@ -249,7 +254,7 @@ models:
             sum_total_estimated_bn:
               type: sum
               label: Total Estimated (Billions)
-              format: [$$]#,##0.00,,,"B"
+              format: '[$$]#,##0.00,,"M"'
               groups:
                 - estimates
               description: >-
