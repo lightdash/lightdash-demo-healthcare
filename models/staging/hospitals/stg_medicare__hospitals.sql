@@ -5,7 +5,7 @@ with source as (
 ), clean as (
 
     select
-      cast(provider_id as int64) as provider_id,
+      cast(provider_id as string) as provider_id,
       upper(hospital_name) as provider_name,
       upper(address) as provider_address,
       upper(city) as provider_city,
