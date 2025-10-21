@@ -4,6 +4,7 @@ models:
     config:
       tags: ['prod']
     meta:
+      primary_key: [provider_id]
       group_details:
         averages:
           label: Averages
@@ -99,6 +100,9 @@ models:
     columns:
       - name: provider_id
         description: "The Provider ID; primary key for hospitals"
+        tests:
+          - not_null
+          - unique
         meta:
           dimension:
             type: string

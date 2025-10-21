@@ -1,6 +1,7 @@
 models:
   - name: outpatient_charges
     meta:
+      primary_key: [uid]
       group_details:
         location:
           label: Provider Location
