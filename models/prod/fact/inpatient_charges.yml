@@ -16,14 +16,12 @@ models:
         - join: hospitals
           type: left
           sql_on: ${inpatient_charges.provider_id} = ${hospitals.provider_id}
-          fields: [inpatient_charges_fields*]
           relationship: many-to-one
 
       metrics:
         avg_charged_per_discharge:
           type: number
-          format: usd
-          round: 0
+          format: [$$]#,##0.00
           groups:
             - estimates
           label: Average Charged per Discharge
@@ -126,7 +124,6 @@ models:
           metrics:
             sum_total_charged:
               type: sum
+              format: [$$]#,##0.00
               label: Sum Total Charged
-              format: usd
-              round: 2
 
