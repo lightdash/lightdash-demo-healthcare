@@ -1,7 +1,7 @@
 models:
   - name: inpatient_charges
     meta:
-      primary_key: [uid]
+      primary_key: uid
       group_details:
         location:
           label: Provider Location
@@ -12,20 +12,20 @@ models:
           description: >-
             Metrics related to estimated charges. For inpatient, most reporting focuses on total Medicare payments versus total charges.
 
-      joins:
-        - join: hospitals
-          type: left
-          sql_on: ${inpatient_charges.provider_id} = ${hospitals.provider_id}
-          relationship: many-to-one
-
       metrics:
         avg_charged_per_discharge:
           type: number
-          format: [$$]#,##0.00
+          format: '[$$]#,##0.00'
           groups:
             - estimates
           label: Average Charged per Discharge
           sql: ${sum_total_charged} / ${sum_total_discharges}
+
+      joins: 
+        - join: hospitals 
+          type: left 
+          sql_on: ${inpatient_charges.provider_id} = ${hospitals.provider_id} 
+          relationship: many-to-one
 
     columns:
       - name: service_year
@@ -40,7 +40,6 @@ models:
         meta:
           dimension:
             type: string
-            format: id
       - name: provider_name
         description: Official provider name from the Medicare database.
         meta:
@@ -124,6 +123,6 @@ models:
           metrics:
             sum_total_charged:
               type: sum
-              format: [$$]#,##0.00
+              format: '[$$]#,##0.00'
               label: Sum Total Charged
 

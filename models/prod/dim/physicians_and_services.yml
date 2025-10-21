@@ -4,7 +4,7 @@ models:
     config:
       tags: ['prod']
     meta:
-      primary_key: [uid]
+      primary_key: uid
       group_details:
         location:
           label: Physician Location
@@ -54,7 +54,7 @@ models:
           label: Benefit Coverage Ratio
           sql: ${sum_number_benefits} / NULLIF(${sum_number_services}, 0)
           description: Average medicare allowed amount divided by average submitted charge amount.
-          format: percent
+          format: '#,##0.00%'
           groups:
             - averages
 
@@ -64,7 +64,6 @@ models:
         meta:
           dimension:
             type: number
-            format: id
             label: Physician ID
           metrics:
             count_distinct_physician_id:
@@ -200,6 +199,7 @@ models:
           metrics:
             sum_number_services:
               type: sum
+              format: '0'
               label: Total Services
               groups:
                 - totals
@@ -208,8 +208,8 @@ models:
                 fields you have selected.
             sum_number_services_k:
               type: sum
+              format: '#,##0,"K"'
               label: Total Services (Thousands)
-              compact: thousands
               groups:
                 - totals
               description: >-
@@ -217,8 +217,8 @@ models:
                 fields you have selected, compacted to thousands.
             sum_number_services_mm:
               type: sum
+              format: '#,##0.00,,"M"'
               label: Total Services (Millions)
-              compact: millions
               groups:
                 - totals
               description: >-
@@ -237,7 +237,7 @@ models:
           metrics:
             sum_number_benefits:
               type: sum
-              format: 0
+              format: '0'
               label: Total Benefits
               groups:
                 - totals
@@ -246,7 +246,7 @@ models:
                 fields you have selected.
             sum_number_benefits_k:
               type: sum
-              format: #,##0,"K"
+              format: '#,##0,"K"'
               label: Total Benefits (Thousands)
               compact: thousands
               groups:
@@ -256,7 +256,7 @@ models:
                 fields you have selected, compacted to thousands.
             sum_number_benefits_mm:
               type: sum
-              format: #,##0.00,,"M"
+              format: '#,##0.00,,"M"'
               label: Total Benefits (Millions)
               compact: millions
               groups:
@@ -277,7 +277,7 @@ models:
           metrics:
             sum_total_day_services_for_beneficiaries:
               type: sum
-              format: 0
+              format: '0'
               label: Total Service Days for Beneficiaries
               groups:
                 - totals
