@@ -1,89 +1,129 @@
-version: 2
 models:
   - name: stg_medicare__inpatient_charges
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - service_year
+            - provider_id
+            - drg_code
     config:
       tags: ['stg']
     columns:
+      - name: uid
+        description: "Unique identifier for each record, composed of service year, provider ID, and DRG code"
+        tests:
+          - unique
+          - not_null
+        meta:
+          dimension:
+            type: string
+            hidden: true
       - name: service_year
-        description: ""
+        description: "Year of service"
+        tests:
+          - not_null
         meta:
           dimension:
             type: number
             hidden: true
       - name: provider_id
-        description: ""
+        description: "The Provider ID; primary key in this table"
+        tests:
+          - not_null
         meta:
           dimension:
-            type: number
+            type: string
             hidden: true
       - name: provider_name
-        description: ""
+        description: "The name of the provider"
         meta:
           dimension:
             type: string
             hidden: true
       - name: provider_city
-        description: ""
+        description: "City where the provider is located"
         meta:
           dimension:
             type: string
             hidden: true
       - name: provider_state
-        description: ""
+        description: "State where the provider is located"
         meta:
           dimension:
             type: string
             hidden: true
       - name: provider_division
-        description: ""
+        description: "Provider division derived from provider state"
         meta:
           dimension:
             type: string
             hidden: true
       - name: provider_region
-        description: ""
+        description: "Provider region derived from provider division"
         meta:
           dimension:
             type: string
             hidden: true
       - name: hospital_referral_region_description
-        description: ""
+        description: "Description of the hospital referral region"
+        meta:
+          dimension:
+            type: string
+            hidden: true
+      - name: drg_definition
+        description: "The line item treatment classification code and description"
+        meta:
+          dimension:
+            type: string
+            hidden: true
+      - name: drg_code
+        description: "The line item treatment classification code"
+        tests:
+          - not_null
         meta:
           dimension:
             type: string
             hidden: true
       - name: provider_name_and_id
-        description: ""
+        description: "A concatenation of provider name and ID for reporting consistency"
         meta:
           dimension:
             type: string
             hidden: true
       - name: total_discharges
-        description: ""
+        description: "Total number of discharges for the DRG"
+        tests:
+          - not_null
         meta:
           dimension:
             type: number
             hidden: true
       - name: average_covered_charges
-        description: ""
+        description: "Average covered charges for the DRG"
+        tests:
+          - not_null
         meta:
           dimension:
             type: number
             hidden: true
       - name: average_total_payments
-        description: ""
+        description: "Average total payments for the DRG"
+        tests:
+          - not_null
         meta:
           dimension:
             type: number
             hidden: true
       - name: average_medicare_payments
-        description: ""
+        description: "Average Medicare payments for the DRG"
+        tests:
+          - not_null
         meta:
           dimension:
             type: number
             hidden: true
       - name: total_charged
-        description: ""
+        description: "Total charged amount (calculated)"
         meta:
           dimension:
             type: number

@@ -1,71 +1,99 @@
-version: 2
 models:
   - name: stg_medicare__outpatient_charges
     config:
       tags: ['stg']
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - service_year
+            - provider_id
+            - apc_code
     columns:
       - name: provider_name_and_id
-        description: ""
+        description: "Provider name concatenated with provider ID"
+        meta:
+          dimension:
+            type: string
+            hidden: true
+      - name: uid
+        description: "Unique identifier for each record, composed of provider ID, APC Code, and service year"
+        tests:
+          - unique
+          - not_null
         meta:
           dimension:
             type: string
             hidden: true
       - name: provider_id
-        description: ""
+        description: "The Provider ID; primary key in this table"
+        tests:
+          - not_null
         meta:
           dimension:
-            type: number
+            type: string
             hidden: true
       - name: provider_name
-        description: ""
+        description: "The name of the provider"
         meta:
           dimension:
             type: string
             hidden: true
       - name: provider_city
-        description: ""
+        description: "City where the provider is located"
         meta:
           dimension:
             type: string
             hidden: true
       - name: provider_state
-        description: ""
+        description: "State where the provider is located"
         meta:
           dimension:
             type: string
             hidden: true
       - name: hospital_referral_region
-        description: ""
+        description: "Hospital referral region for the provider"
         meta:
           dimension:
             type: string
             hidden: true
       - name: apc
-        description: ""
+        description: "Ambulatory Payment Classification (APC) code for the outpatient service"
+        meta:
+          dimension:
+            type: string
+            hidden: true
+      - name: apc_code
+        description: "APC code used for uniqueness testing and mapping to charges"
+        tests:
+          - not_null
         meta:
           dimension:
             type: string
             hidden: true
       - name: number_services
-        description: ""
+        description: "Number of services provided for the APC"
+        tests:
+          - not_null
         meta:
           dimension:
             type: number
             hidden: true
       - name: total_paid
-        description: ""
+        description: "Total paid amount by Medicare for the APC"
         meta:
           dimension:
             type: number
             hidden: true
       - name: total_estimated
-        description: ""
+        description: "Estimated total charges for the APC"
         meta:
           dimension:
             type: number
             hidden: true
       - name: service_year
-        description: ""
+        description: "Year of service"
+        tests:
+          - not_null
         meta:
           dimension:
             type: number

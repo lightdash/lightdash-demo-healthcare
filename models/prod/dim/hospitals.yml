@@ -1,4 +1,3 @@
-version: 2
 models:
   - name: hospitals
     description: "Dimension table for hospitals, AKA: providers"
@@ -102,7 +101,7 @@ models:
         description: "The Provider ID; primary key for hospitals"
         meta:
           dimension:
-            type: number
+            type: string
             hidden: false
       - name: provider_name
         description: "Hospital name"
@@ -120,6 +119,8 @@ models:
               - location
       - name: provider_city
         description: "City where the hospital is located"
+        tests:
+          - not_null
         meta:
           dimension:
             type: string
@@ -128,6 +129,8 @@ models:
               - location
       - name: provider_state
         description: "State where the hospital is located"
+        tests:
+          - not_null
         meta:
           dimension:
             type: string
