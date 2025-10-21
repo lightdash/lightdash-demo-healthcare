@@ -113,12 +113,13 @@ models:
         meta:
           dimension:
             type: number
-            hidden: true
+            hidden: false
       - name: total_charged
         description: Total charges (average_covered_charges * total_discharges).
         meta:
           dimension:
             type: number
+            format: '[$$]#,##0.00'
             hidden: false
           metrics:
             sum_total_charged:
