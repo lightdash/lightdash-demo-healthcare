@@ -1,5 +1,3 @@
-version: 2
-
 sources:
   - name: medicare
     description: This source is pulling public Medicare data directly from BigQuery public datasets

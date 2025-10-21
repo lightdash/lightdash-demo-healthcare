@@ -1,7 +1,7 @@
-version: 2
 models:
   - name: inpatient_charges
     meta:
+      primary_key: [uid]
       group_details:
         location:
           label: Provider Location
@@ -41,7 +41,7 @@ models:
         description: Unique ID for each provider.
         meta:
           dimension:
-            type: number
+            type: string
             format: id
       - name: provider_name
         description: Official provider name from the Medicare database.
