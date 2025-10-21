@@ -80,22 +80,6 @@ models:
           groups:
             - efficiency
           description: "Ratio of safety measures that are worse than the national average"
-        patient_experience_measures_better_pct:
-          type: number
-          sql: ${total_patient_experience_measures_better} / NULLIF(${total_patient_experience_measures}, 0)
-          format: percent
-          label: "% Patient Experience Measures Better than Avg"
-          groups:
-            - efficiency
-          description: "Ratio of patient experience measures that are better than the national average"
-        patient_experience_measures_worse_pct:
-          type: number
-          sql: ${total_patient_experience_measures_worse} / NULLIF(${total_patient_experience_measures}, 0)
-          format: percent
-          label: "% Patient Experience Measures Worse than Avg"
-          groups:
-            - efficiency
-          description: "Ratio of patient experience measures that are worse than the national average"
         readmission_measures_better_pct:
           type: number
           sql: ${total_readmission_measures_better} / NULLIF(${total_readmission_measures}, 0)
@@ -112,22 +96,6 @@ models:
           groups:
             - efficiency
           description: "Ratio of readmission measures that are worse than the national average"
-        timely_effective_measures_better_pct:
-          type: number
-          sql: ${total_timely_effective_measures_better} / NULLIF(${total_timely_effective_measures}, 0)
-          format: percent
-          label: "% Timely & Effective Care Measures Better than Avg"
-          groups:
-            - efficiency
-          description: "Ratio of timely and effective care measures that are better than average"
-        timely_effective_measures_worse_pct:
-          type: number
-          sql: ${total_timely_effective_measures_worse} / NULLIF(${total_timely_effective_measures}, 0)
-          format: percent
-          label: "% Timely & Effective Care Measures Worse than Avg"
-          groups:
-            - efficiency
-          description: "Ratio of timely and effective care measures that are worse than average"
 
     columns:
       - name: provider_id
@@ -412,40 +380,6 @@ models:
                 - totals
               description: >-
                 The total number of patient experience measures reported for the hospital.
-      - name: patient_experience_measures_better_count
-        description: "Number of patient experience measures reported better than other hospitals"
-        meta:
-          dimension:
-            type: number
-            hidden: false
-            groups:
-              - better_counts
-          metrics:
-            total_patient_experience_measures_better:
-              type: sum
-              label: Total Patient Experience Measures Better
-              format: "0.00"
-              groups:
-                - totals
-              description: >-
-                The total number of patient experience measures reported better than other hospitals.
-      - name: patient_experience_measures_worse_count
-        description: "Number of patient experience measures reported worse than other hospitals"
-        meta:
-          dimension:
-            type: number
-            hidden: false
-            groups:
-              - worse_counts
-          metrics:
-            total_patient_experience_measures_worse:
-              type: sum
-              label: Total Patient Experience Measures Worse
-              format: "0.00"
-              groups:
-                - totals
-              description: >-
-                The total number of patient experience measures reported worse than other hospitals.
       - name: facility_timely_and_effective_care_measures_count
         description: "Number of timely and effective care measures reported for the hospital"
         meta:
@@ -463,37 +397,3 @@ models:
                 - totals
               description: >-
                 The total number of timely and effective care measures reported for the hospital.
-      - name: timely_and_effective_care_measures_better_count
-        description: "Number of timely and effective care measures reported better than other hospitals"
-        meta:
-          dimension:
-            type: number
-            hidden: false
-            groups:
-              - better_counts
-          metrics:
-            total_timely_effective_measures_better:
-              type: sum
-              label: Total Timely & Effective Care Measures Better
-              format: "0.00"
-              groups:
-                - totals
-              description: >-
-                The total number of timely and effective care measures reported better than other hospitals.
-      - name: timely_and_effective_care_measures_worse_count
-        description: "Number of timely and effective care measures reported worse than other hospitals"
-        meta:
-          dimension:
-            type: number
-            hidden: false
-            groups:
-              - worse_counts
-          metrics:
-            total_timely_effective_measures_worse:
-              type: sum
-              label: Total Timely & Effective Care Measures Worse
-              format: "0.00"
-              groups:
-                - totals
-              description: >-
-                The total number of timely and effective care measures reported worse than other hospitals.
