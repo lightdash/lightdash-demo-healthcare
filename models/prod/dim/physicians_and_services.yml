@@ -57,6 +57,14 @@ models:
           format: '#,##0.00%'
           groups:
             - averages
+        services_per_physician:
+          type: number
+          format: '0.0'
+          label: Services per Physician
+          sql: ${sum_number_services} / NULLIF(${count_distinct_physician_id}, 0)
+          description: Total services divided by unique physician count.
+          groups:
+            - averages
 
     columns:
       - name: physician_id
@@ -197,7 +205,7 @@ models:
           metrics:
             sum_number_services:
               type: sum
-              format: '0'
+              format: '#,##0.000,"K"'
               label: Total Services
               groups:
                 - totals
