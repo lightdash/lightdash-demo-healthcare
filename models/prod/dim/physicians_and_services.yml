@@ -57,6 +57,14 @@ models:
           format: '#,##0.00%'
           groups:
             - averages
+        services_per_physician:
+          type: number
+          format: '0.0'
+          label: Services per Physician
+          sql: ${sum_number_services} / NULLIF(${count_distinct_physician_id}, 0)
+          description: Total services divided by unique physician count.
+          groups:
+            - averages
 
     columns:
       - name: physician_id
@@ -85,11 +93,9 @@ models:
             type: string
             groups:
               - descriptors
-      - name: physician_name_and_id
+      - name: physician_full_name
         description: >-
-          A combination of the physician First Name and ID fields to ensure queries
-          that require showing physician Name are not accidentally duplicating
-          physicians with the same name.
+          A combination of the physician First Name, Last Name, and credentials fields to identify top performing physicians.
         meta:
           dimension:
             label: Physician Name
@@ -199,7 +205,7 @@ models:
           metrics:
             sum_number_services:
               type: sum
-              format: '0'
+              format: '#,##0.000,"K"'
               label: Total Services
               groups:
                 - totals

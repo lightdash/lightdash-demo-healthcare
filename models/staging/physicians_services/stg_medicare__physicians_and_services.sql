@@ -122,6 +122,9 @@ select
   physician_last_name,
   physician_first_name,
   physician_credentials,
+  COALESCE(physician_first_name, '') || ' ' ||
+    COALESCE(physician_last_name, '') || ' ' ||
+    COALESCE(physician_credentials, '') AS physician_full_name,
   physician_gender,
   physician_city,
   physician_state,

@@ -91,7 +91,7 @@ models:
         meta:
           dimension:
             type: number
-            hidden: true
+            hidden: false
           metrics:
             sum_total_discharges:
               type: sum
@@ -101,25 +101,26 @@ models:
         meta:
           dimension:
             type: number
-            hidden: true
+            hidden: false
       - name: average_total_payments
         description: Average total payments for inpatient services.
         meta:
           dimension:
             type: number
-            hidden: true
+            hidden: false
       - name: average_medicare_payments
         description: Average Medicare payments per discharge.
         meta:
           dimension:
             type: number
-            hidden: true
+            hidden: false
       - name: total_charged
         description: Total charges (average_covered_charges * total_discharges).
         meta:
           dimension:
             type: number
-            hidden: true
+            format: '[$$]#,##0.00'
+            hidden: false
           metrics:
             sum_total_charged:
               type: sum

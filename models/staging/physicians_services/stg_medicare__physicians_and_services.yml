@@ -31,7 +31,12 @@ models:
           dimension:
             type: string
       - name: physician_credentials
-        description: "The official titile of the physician, like MD, PA, RN"
+        description: "The official title of the physician, like MD, PA, RN"
+        meta:
+          dimension:
+            type: string
+      - name: physician_full_name
+        description: "The official name and title of the physician, like Heather Morris, MD."
         meta:
           dimension:
             type: string
