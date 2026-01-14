@@ -25,7 +25,7 @@ models:
           dimension:
             type: number
       - name: provider_id
-        description: "The Provider ID; primary key in this table"
+        description: "The Provider ID; primary key in this"
         tests:
           - not_null
         meta:
