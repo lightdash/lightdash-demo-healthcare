@@ -395,12 +395,3 @@ models:
             hidden: false
             groups:
               - raw_counts
-          metrics:
-            total_timely_effective_measures:
-              type: sum
-              label: Total Timely & Effective Care Measures
-              format: '0'
-              groups:
-                - totals
-              description: >-
-                The total number of timely and effective care measures reported for the hospital.
